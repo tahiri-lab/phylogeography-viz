@@ -1,0 +1,45 @@
+---
+title: "test"
+author: "Wanlin"
+date: "25/06/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(shiny)
+library(tidyverse)
+library(plotly)
+library(DT)
+library(readr)
+```
+
+```{r}
+dat<-read.table("Meteorology.csv", header = TRUE, sep = "\t")
+dat
+```
+
+```{r}
+dat<-read.table("Meteorology.csv", header = TRUE, sep = "\t")
+dat<- dat %>% select(c("id_country","country","ccode","date","cases","deaths","temperature","radiation","precipitation","humidity","wind"))
+dat<-drop_na(dat)
+dat
+```
+
+```{r}
+
+dat[!duplicated(dat[1]),]
+```
+
+
+
+
+
+```{r}
+summary(dat)
+```
+
+

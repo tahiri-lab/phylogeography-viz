@@ -1,0 +1,13 @@
+name: COVID_Meteorology_Shiny
+title: COVID_Meteorology_Shiny
+username:
+account: 6mrjbu-wanlin0li
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4324330
+bundleId: 4760481
+url: https://6mrjbu-wanlin0li.shinyapps.io/COVID_Meteorology_Shiny/
+when: 1624772477.99784
+lastSyncTime: 1624772477.99785
+asMultiple: FALSE
+asStatic: FALSE

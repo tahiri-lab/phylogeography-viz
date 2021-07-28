@@ -1,0 +1,14 @@
+name: COVID_with_shiny
+title: COVID_with_shiny
+username:
+account: 6mrjbu-wanlin0li
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4324339
+bundleId: 4760486
+url: https://6mrjbu-wanlin0li.shinyapps.io/COVID_with_shiny/
+when: 1624772660.41851
+lastSyncTime: 1624772660.41853
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: test.Rmd
