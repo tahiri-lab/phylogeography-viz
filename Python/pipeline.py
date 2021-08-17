@@ -32,7 +32,7 @@ def prepareDirectory():
     for item in delete_path:
         if item.endswith("_gene"):
             shutil.rmtree('output'+'/'+item)
-
+prepareDirectory()
 
 #--------------------------------------------------------------
 #'1. Use the whole DNA sequences'
@@ -353,4 +353,4 @@ def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_t
 
 #createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
 
-displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
+#displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)

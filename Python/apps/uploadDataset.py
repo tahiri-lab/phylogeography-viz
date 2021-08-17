@@ -1,4 +1,3 @@
-from apps import tree
 import dash
 import dash_core_components as dcc
 from dash_core_components.Graph import Graph
@@ -20,7 +19,7 @@ import os
 import subprocess
 
 import importlib
-import apps.tree
+import tree
 
 
 # For uploaded dataset

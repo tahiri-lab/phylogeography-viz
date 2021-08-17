@@ -2,7 +2,7 @@ import subprocess
 import pandas as pd
 import os
 import pathlib
-#from pipeline import getDissimilaritiesMatrix
+from pipeline import getDissimilaritiesMatrix
 
 
 
@@ -22,7 +22,7 @@ def prepareDirectory():
     for item in delete_path:
         if item.endswith("_newick"):
             os.remove(item)
-
+'''
 def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_to_search, outfile_name):
     PATH = pathlib.Path(__file__).parent
     DATA_PATH = PATH.joinpath("../datasets").resolve()
@@ -67,14 +67,14 @@ def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_t
                 f.write("{:.6f}".format((temp_tab[j][k] - min_value)/(max_value - min_value)) + " ")
             f.write("\n")
     subprocess.call(["rm", "outfile"]) # clean up
-
+'''
 
 def create_tree(file_name, names):
     prepareDirectory()
     for i in range(1, len(names)):
         getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") 
         # liste a la position 0 contient les noms des specimens
-        os.system("./exec/neighbor < input_files/neighbor_input.txt")
+        os.system("./exec/neighbor < input_files/input.txt")
         subprocess.call(["mv", "outtree", "intree"])
         subprocess.call(["rm", "infile", "outfile"])
         os.system("./exec/consense < input_files/input.txt" )
@@ -90,6 +90,6 @@ def create_tree(file_name, names):
 #    else:
 #        subprocess.call(["rm", "intree"])
 
-#create_tree(file_name, names)
+create_tree(file_name, names)
 
 #prepareDirectory()
