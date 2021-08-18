@@ -5,13 +5,14 @@ import pandas as pd
 from csv import writer
 import shutil
 
+# ATTENTION AUX NOMS DES FICHIERS AVEC LES _
 count = 3 #input("How many climatic data tree will be used?: ")
 bootstrap_threshold = 10
 rf_threshold = 2
 window_size = 300
 step_size = 100 
-data_names = ["Humidité relative à 2m %_newick", 
-                "T min à 2m C_newick","T max à 2m C_newick"]
+data_names = ["Humidité_relative_à_2m_%_newick",
+              "T_min_à_2m_C_newick", "T_max_à_2m_C_newick"]
 reference_gene_file = 'output/reference_gene.fasta'
 
 
@@ -59,9 +60,9 @@ def alignSequences(reference_gene_file):
     number_seq = int(f.split()[0])
     return number_seq
 
-number_seq = alignSequences(reference_gene_file)
+# number_seq = alignSequences(reference_gene_file)
 
-print(number_seq)
+# print(number_seq)
 
 #-------------------------------------------------
 
@@ -143,21 +144,21 @@ def slidingWindow(window_size=0, step=0):
     os.system("rm out outfile infile")
 
 def createBoostrap():
-    os.system("./exec/seqboot < input_files/bootstrap_input.txt")
+    os.system("./exec/seqboot < input/bootstrap_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
 def createDistanceMatrix():
-    os.system("./exec/dnadist < input_files/dnadist_input.txt")
+    os.system("./exec/dnadist < input/dnadist_input.txt")
     subprocess.call(["mv", "outfile", "infile"])
 
 def createUnrootedTree():
-    os.system("./exec/neighbor < input_files/neighbor_input.txt")
+    os.system("./exec/neighbor < input/neighbor_input.txt")
     subprocess.call(["rm", "infile", "outfile"])
     subprocess.call(["mv", "outtree", "intree"])
 
 
 def createConsensusTree():
-    os.system("./exec/consense < input_files/input.txt")
+    os.system("./exec/consense < input/input.txt")
     # subprocess.call(["mv", "outtree", file])
     subprocess.call(["rm", "intree", "outfile"])
 
@@ -303,54 +304,8 @@ def getGene(gene, pattern):
 
     new_file.close()
 
-#---------------------------------------------------------------
-def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_to_search, outfile_name):
-    df = pd.read_csv('./datasets/' + nom_fichier_csv)
-    # creation d'une liste contenant les noms des specimens et les temperatures min
-    meteo_data = df[column_to_search].tolist()
-    nom_var = df[column_with_specimen_name].tolist()
-    nbr_seq = len(nom_var)
-    # ces deux valeurs seront utiles pour la normalisation
-    max_value = 0  
-    min_value = 0
-
-    # premiere boucle qui permet de calculer une matrice pour chaque sequence
-    temp_tab = []
-    for e in range(nbr_seq):
-        # une liste qui va contenir toutes les distances avant normalisation
-        temp_list = []
-        for i in range(nbr_seq):        
-            maximum = max(float(meteo_data[e]), float(meteo_data[i]))
-            minimum = min(float(meteo_data[e]), float(meteo_data[i]))
-            distance = maximum - minimum
-            temp_list.append(float("{:.6f}".format(distance)))
-
-        # permet de trouver la valeur maximale et minimale pour la donnee meteo et ensuite d'ajouter la liste temporaire a un tableau
-        if max_value < max(temp_list):
-            max_value = max(temp_list)
-        if min_value > min(temp_list):
-            min_value = min(temp_list)
-        temp_tab.append(temp_list)
-    
-    # ecriture des matrices normalisees dans les fichiers respectifs
-    with open(outfile_name, "w") as f:
-        f.write("   " + str(len(nom_var)) + "\n")
-        for j in range(nbr_seq):
-            f.write(nom_var[j])
-            # petite boucle pour imprimer le bon nbr d'espaces
-            for espace in range(11-len(nom_var[j])):
-                f.write(" ")
-            for k in range(nbr_seq):
-                # la normalisation se fait selon la formule suivante: (X - Xmin)/(Xmax - Xmin)
-                f.write("{:.6f}".format((temp_tab[j][k] - min_value)/(max_value - min_value)) + " ")
-            f.write("\n")
-    subprocess.call(["rm", "outfile"]) # clean up
-
-
-
 #if __name__ == '__main__':
 #    menu()
-
 createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
 
 #displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
