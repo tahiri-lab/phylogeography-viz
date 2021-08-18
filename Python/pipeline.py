@@ -5,13 +5,13 @@ import pandas as pd
 from csv import writer
 import shutil
 
-count = 5 #input("How many climatic data tree will be used?: ")
+count = 3 #input("How many climatic data tree will be used?: ")
 bootstrap_threshold = 10
 rf_threshold = 2
 window_size = 300
 step_size = 100 
-data_names = ["Précipitation totale sur le mois (mm)_newick", 
-                "Pression en surface (kPa)_newick","T max à 2m (C)_newick","T min à 2m (C)_newick"]
+data_names = ["Humidité relative à 2m %_newick", 
+                "T min à 2m C_newick","T max à 2m C_newick"]
 reference_gene_file = 'output/reference_gene.fasta'
 
 
@@ -305,7 +305,7 @@ def getGene(gene, pattern):
 
 #---------------------------------------------------------------
 def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_to_search, outfile_name):
-    df = pd.read_csv(nom_fichier_csv)
+    df = pd.read_csv('./datasets/' + nom_fichier_csv)
     # creation d'une liste contenant les noms des specimens et les temperatures min
     meteo_data = df[column_to_search].tolist()
     nom_var = df[column_with_specimen_name].tolist()
@@ -351,6 +351,6 @@ def getDissimilaritiesMatrix(nom_fichier_csv,column_with_specimen_name, column_t
 #if __name__ == '__main__':
 #    menu()
 
-#createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
 
 #displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
