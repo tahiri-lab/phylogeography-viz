@@ -5,11 +5,13 @@ import pathlib
 
 
 
-file_name = "donnees.csv"
-#number_trees = 5  #"Number of trees to create
-specimen = 'Nom du specimen'   #"Please enter the name of the colum containing the specimens names: "
+#file_name = "donnees.csv"
 
-names = ['Nom du specimen','T min à 2m C','T max à 2m C','Humidité relative à 2m %']
+#specimen = 'Nom du specimen'   #"Please enter the name of the colum containing the specimens names: "
+
+#names = ['Nom du specimen','T min à 2m C',
+        #'T max à 2m C',
+ #       'Humidité relative à 2m %']
 #-----------------------------------------------------
 def prepareDirectory():
     # delete the results of last analysis, if we have    ???
@@ -70,7 +72,7 @@ def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_
 #-----------------------------------------
 
 def create_tree(file_name, names):
-    # prepareDirectory()
+    prepareDirectory()
     for i in range(1, len(names)):
         getDissimilaritiesMatrix(file_name, names[0], names[i], "infile") # liste a la position 0 contient les noms des specimens
         os.system("./exec/neighbor < input/input.txt")
@@ -92,6 +94,6 @@ def create_tree(file_name, names):
 #        subprocess.call(["rm", "intree"])
 
 
-create_tree(file_name, names)
+#create_tree(file_name, names)
 
 #prepareDirectory()

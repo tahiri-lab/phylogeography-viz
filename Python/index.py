@@ -3,13 +3,15 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
+import tree
+import pipeline
 
 # Connect to main app.py file
 from app import app
 from app import server
 
 # Connect to your app pages
-from apps import createTreeWithOurData, createTreeWithUploadedData, uploadDataset, usingOurDataset, homePage, tree
+from apps import pipelineWithOurData, pipelineWithUploadedData, uploadDataset, usingOurDataset, homePage
 
 # styling the sidebar
 SIDEBAR_STYLE = {
@@ -39,9 +41,9 @@ sidebar = html.Div(
         dbc.Nav(
             [dbc.NavLink("Home", href='/apps/homePage', active="exact"),
             dbc.NavLink("Upload Meteorological Data", href='/apps/uploadDataset', active="exact"), 
-            dbc.NavLink("Uploaded Genetic Data (whole sequences)", href='/apps/createTreeWithUploadedData', active="exact"),
+            dbc.NavLink("Uploaded Genetic Data (whole sequences)", href='/apps/pipelineWithUploadedData', active="exact"),
             dbc.NavLink("Using Our Meteorological Data (SARS-CoV-2)", href='/apps/usingOurDataset', active="exact"),
-            dbc.NavLink("Phylogeography analysis With Our Data (SARS-CoV-2, whole sequences)", href='/apps/createTreeWithOurData', active="exact"),
+            dbc.NavLink("Phylogeography analysis With Our Data (SARS-CoV-2, whole sequences)", href='/apps/pipelineWithOurData', active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -67,12 +69,12 @@ def display_page(pathname):
         return homePage.layout
     if pathname == '/apps/uploadDataset': 
         return uploadDataset.layout
-    if pathname == '/apps/createTreeWithUploadedData':
-        return createTreeWithUploadedData.layout
+    if pathname == '/apps/pipelineWithUploadedData':
+        return pipelineWithUploadedData.layout
     if pathname == '/apps/usingOurDataset': 
         return usingOurDataset.layout
-    if pathname == '/apps/createTreeWithOurData':
-        return createTreeWithOurData.layout
+    if pathname == '/apps/pipelineWithOurData':
+        return pipelineWithOurData.layout
     else:
         return homePage.layout 
 

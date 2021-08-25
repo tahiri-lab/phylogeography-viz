@@ -6,19 +6,19 @@ from csv import writer
 import shutil
 
 # ATTENTION AUX NOMS DES FICHIERS AVEC LES _
-count = 3 #input("How many climatic data tree will be used?: ")
-bootstrap_threshold = 10
-rf_threshold = 2
-window_size = 300
+'''
+bootstrap_threshold = 0
+rf_threshold = 100
+window_size = 5000
 step_size = 100 
 data_names = ["Humidité_relative_à_2m_%_newick",
-              "T_min_à_2m_C_newick", "T_max_à_2m_C_newick"]
+              "T_min_à_2m_C_newick"]
 reference_gene_file = 'output/reference_gene.fasta'
 
-
+'''
 #-----------------------------------------
 def prepareDirectory():
-    path_output_windows = './output/windows'                             #???
+    path_output_windows = './output/windows'                             
     isExist = os.path.exists(path_output_windows)
 
     if isExist:
@@ -27,12 +27,19 @@ def prepareDirectory():
     else:
         os.makedirs(path_output_windows)
 
-    # delete the results of last analysis, if we have    ???
+    # delete the results of last analysis, if we have    
     delete_path = os.listdir('output')
 
     for item in delete_path:
         if item.endswith("_gene"):
             shutil.rmtree('output'+'/'+item)
+
+    delete_path2 = os.listdir()
+
+    for item in delete_path2:
+        if item == "output.csv" or item.startswith("RAxML_") or item.startswith("outtree"):
+            os.remove(item)
+
 prepareDirectory()
 
 #--------------------------------------------------------------
@@ -306,6 +313,6 @@ def getGene(gene, pattern):
 
 #if __name__ == '__main__':
 #    menu()
-createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+#createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
 
 #displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
