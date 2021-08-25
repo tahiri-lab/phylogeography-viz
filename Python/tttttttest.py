@@ -1,18 +1,5 @@
-import subprocess
-import pandas as pd
-import os
-import pathlib
+str1 = "speciment"
+list2 = ["aa","bb",'vvv']
 
-def prepareDirectory():
-    # delete the results of last analysis, if we have    ???
-    with open("intree", "w"):
-        pass
-    # remove old newick files
-    delete_path = os.listdir()
-
-    for item in delete_path:
-        if item.endswith("_newick"):
-            os.remove(item)
-
-prepareDirectory()
-
+list3 = str1.split()+ list2
+print(list3)

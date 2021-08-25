@@ -52,14 +52,6 @@ layout = dbc.Container([
         ),
     ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
 
-    dbc.Row([
-
-        dbc.Col([
-             html.Div(id='output-div'),
-                ],# width={'size':3, 'offset':1, 'order':1},
-                xs=12, sm=12, md=12, lg=10, xl=10
-                ),
-            ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
 
     dbc.Row([
         dbc.Col([
@@ -68,6 +60,14 @@ layout = dbc.Container([
                 xs=12, sm=12, md=12, lg=10, xl=10
                 ),
                 ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
+    # for Bar Graph or Scatter Plot
+    dbc.Row([
+        dbc.Col([
+             html.Div(id='output-div'),
+                ],# width={'size':3, 'offset':1, 'order':1},
+                xs=12, sm=12, md=12, lg=10, xl=10
+                ),
+            ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
         
     # another row for Choropleth Map
     dbc.Row([
@@ -141,6 +141,27 @@ def parse_contents(contents, filename, date):
     param_selection = dbc.Container([ 
                 dbc.Row([
                         dbc.Col([
+                            dash_table.DataTable(
+                                    data= df.to_dict('records'),
+                                    columns=[{'name': i, 'id': i} for i in df.columns],
+                                    page_size=15
+                                ),
+                                dcc.Store(id='stored-data', data=df.to_dict('records')),
+
+                                html.Hr(),  # horizontal line
+
+                                # For debugging, display the raw contents provided by the web browser
+                                #html.Div('Raw Content'),
+                                #html.Pre(contents[0:200] + '...', style={
+                                #    'whiteSpace': 'pre-wrap',
+                                #    'wordBreak': 'break-all'
+                                #}),
+                        ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+                    ],no_gutters=True, justify='around'), 
+
+                dbc.Row([
+                        dbc.Col([
                             html.Div([
                                 html.H5(filename),
                                 #html.H6(datetime.datetime.fromtimestamp(date)),
@@ -165,7 +186,7 @@ def parse_contents(contents, filename, date):
                                 html.Hr(),
                             # parameters for creating phylogeography trees
                                 html.H2('Create Phylogeography Trees', style={"textAlign": "center"}),  #title
-                                html.P("Inset the name of the colum containing the specimens names"),
+                                html.P("Inset the name of the column containing the specimens names"),
                                 dcc.Dropdown(id='col-specimens',
                                             options=[{'label':x, 'value':x} for x in df.columns]),
                                 html.P("select the name of the column to analyze"),
@@ -181,26 +202,7 @@ def parse_contents(contents, filename, date):
                         ],xs=12, sm=12, md=12, lg=10, xl=10),
                     ],no_gutters=True, justify='around'), 
 
-                dbc.Row([
-                        dbc.Col([
-                            dash_table.DataTable(
-                                    data= df.to_dict('records'),
-                                    columns=[{'name': i, 'id': i} for i in df.columns],
-                                    page_size=15
-                                ),
-                                dcc.Store(id='stored-data', data=df.to_dict('records')),
-
-                                html.Hr(),  # horizontal line
-
-                                # For debugging, display the raw contents provided by the web browser
-                                #html.Div('Raw Content'),
-                                #html.Pre(contents[0:200] + '...', style={
-                                #    'whiteSpace': 'pre-wrap',
-                                #    'wordBreak': 'break-all'
-                                #}),
-                        ],xs=12, sm=12, md=12, lg=10, xl=10),
-
-                    ],no_gutters=True, justify='around'),    
+                   
          ], fluid=True)
 
     return param_selection
@@ -245,7 +247,7 @@ def make_graphs(n, graph_type, data, x_data, y_data):
 )
 
 def update_output(num_clicks, data, val_selected):
-    print(data[0].keys())
+    #print(data[0].keys())
     if num_clicks is None:
         return dash.no_update
     else:
@@ -271,7 +273,7 @@ def update_output(n,file_name):
     if n is None:
         return dash.no_update
     else:
-        return 'You have selected:  {}'.format(file_name)
+        return dcc.Markdown('You have selected file:  **{}**'.format("; ".join(file_name)))
 
 @app.callback(
     Output('newick-files-container2','children'),
@@ -282,7 +284,7 @@ def update_output(n,specimen):
     if n is None:
         return dash.no_update
     else:
-        return 'You have uploaded:  {}'.format(specimen)
+        return dcc.Markdown('In this file, the name of column containing the specimens names is :  **{}**'.format(specimen))
 
 @app.callback(
     Output('newick-files-container3','children'),
@@ -293,7 +295,7 @@ def update_output(n,names):
     if n is None:
         return dash.no_update
     else:
-        return 'You have selected:  {}'.format(names)
+        return dcc.Markdown('In order to create reference trees, the columns selected are:  **{}**'.format("; ".join(names)))
     
 # phylogeography trees : newick files
 @app.callback(
@@ -307,6 +309,38 @@ def update_output(n,file_name,specimen,names):
     if n is None:
         return dash.no_update
     else:
-        tree.create_tree(file_name, names)
-        dir_results = os.listdir()
-        return 'listdir:  {}'.format(dir_results)
+        #col_names = str(specimen).split() + list(names)
+        col_names = [specimen] + list(names)
+        tree.create_tree(file_name[0], list(col_names)) # run tree.py
+        
+        tree_path = os.listdir()
+        tree_files = []
+        for item in tree_path:
+            if item.endswith("_newick"):
+                tree_files.append(item)
+
+        outputs_container = html.Div([
+            html.Hr(),
+            dcc.Markdown('output files:  **{}**'.format("; ".join(tree_files))),
+            dbc.Button(id='btn-newick',
+                            children=[html.I(className="fa fa-download mr-1"), "Download newick files"],
+                            color="info",
+                            className="mt-1"
+                                    ),
+            dcc.Download(id="download-newick"),
+
+        ])
+
+        return outputs_container
+
+# for download button
+@app.callback(
+    Output("download-newick", "data"),
+    Input("btn-newick", "n_clicks"),
+    State('datatable-interactivity', "derived_virtual_data"),  #????
+    prevent_initial_call=True,
+)
+def func(n_clicks,all_rows_data):    #???
+    dff = pd.DataFrame(all_rows_data) #???
+
+    return dcc.send_data_frame(dff.to_csv, "mydf_csv.csv")#???
