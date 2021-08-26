@@ -4,6 +4,7 @@ from dash_core_components.Graph import Graph
 import dash_html_components as html
 from dash.dependencies import Input, Output,State
 import dash_bootstrap_components as dbc
+from dash_html_components import H4
 from dash_html_components.Hr import Hr
 import plotly.express as px
 import pandas as pd
@@ -309,7 +310,6 @@ def update_output(n,file_name,specimen,names):
     if n is None:
         return dash.no_update
     else:
-        #col_names = str(specimen).split() + list(names)
         col_names = [specimen] + list(names)
         tree.create_tree(file_name[0], list(col_names)) # run tree.py
         
@@ -318,10 +318,16 @@ def update_output(n,file_name,specimen,names):
         for item in tree_path:
             if item.endswith("_newick"):
                 tree_files.append(item)
+                print(item)
+        print(tree_files)
 
         outputs_container = html.Div([
             html.Hr(),
-            dcc.Markdown('output files:  **{}**'.format("; ".join(tree_files))),
+            html.H6('output files:'),
+            html.H5("; ".join(tree_files)),
+            dcc.Input(id = "input_fileName", type = "text", 
+                    placeholder = "Enter the name of the file to be downloaded", 
+                    style= {'width': '68%','marginRight':'20px'}),
             dbc.Button(id='btn-newick',
                             children=[html.I(className="fa fa-download mr-1"), "Download newick files"],
                             color="info",
@@ -337,10 +343,11 @@ def update_output(n,file_name,specimen,names):
 @app.callback(
     Output("download-newick", "data"),
     Input("btn-newick", "n_clicks"),
-    State('datatable-interactivity', "derived_virtual_data"),  #????
+    State('input_fileName','value'), 
     prevent_initial_call=True,
 )
-def func(n_clicks,all_rows_data):    #???
-    dff = pd.DataFrame(all_rows_data) #???
-
-    return dcc.send_data_frame(dff.to_csv, "mydf_csv.csv")#???
+def func(n_clicks, fileName):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        return dcc.send_file(fileName)
