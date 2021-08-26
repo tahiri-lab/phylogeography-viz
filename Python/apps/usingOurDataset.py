@@ -4,6 +4,7 @@ from dash_core_components.Graph import Graph
 import dash_html_components as html
 from dash.dependencies import Input, Output,State
 import dash_bootstrap_components as dbc
+from dash_html_components.Br import Br
 from dash_html_components.Hr import Hr
 import plotly.express as px
 import pandas as pd
@@ -15,6 +16,8 @@ from dash.exceptions import PreventUpdate
 import base64
 import datetime
 import io
+import tree
+import os
 
 # get relative data folder
 PATH = pathlib.Path(__file__).parent
@@ -100,6 +103,30 @@ layout = dbc.Container([
 
          ],no_gutters=True, justify='around'),
 
+        # running tree.py and get newick files
+        html.Hr(),
+        dbc.Row([
+                dbc.Col([
+                    html.Div(id='newick-files-container2_1'),
+                ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+            ],no_gutters=True, justify='around'),
+
+        dbc.Row([
+                dbc.Col([
+                    html.Div(id='newick-files-container3_1'),
+                ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+            ],no_gutters=True, justify='around'),
+
+        dbc.Row([
+                dbc.Col([
+                    html.Div(id='newick-files-container4_1'),
+                ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+            ],no_gutters=True, justify='around'),
+
+        
     
          ], fluid=True)
 
@@ -136,7 +163,7 @@ def parse_contents_fromInteractiveDT(all_rows_data):
         html.P("Select data for choropleth map"),
         dcc.Dropdown(id='map-data-filtered',
                      options=[{'label':x, 'value':x} for x in dff.columns]),
-        #html.Hr(),
+        html.Br(),
         dcc.RadioItems(id='choose-graph-type-filtered',
                         options=[
                             {'label': 'Bar Graph', 'value': 'Bar'},
@@ -144,8 +171,21 @@ def parse_contents_fromInteractiveDT(all_rows_data):
                         ],
                         value='Bar'
                     ),  
+        html.Br(),
         html.Button(id="submit-button-filter", children="Create Graph"),
-        html.Hr()
+        html.Hr(),
+        html.Br(),
+        # parameters for creating phylogeography trees
+        html.H2('Create Phylogeography Trees', style={"textAlign": "center"}),  #title
+        html.H4("Inset the name of the column containing the specimens names"),
+        dcc.Dropdown(id='col-specimens', options=[{'label':x, 'value':x} for x in dff.columns]),
+        html.H4("select the name of the column to analyze"),
+        html.P('The values of the column must be numeric for the program to work properly.'),
+        dcc.Checklist(id = 'col-analyze', options =[{'label': x, 'value': x} for x in dff.columns],
+                        labelStyle={'display': 'inline-block'}),
+        html.Br(),
+        html.Button(id="submit-forTree", children="Create Newick files"),  
+        html.Hr(),
     ])
 
 @app.callback(Output('graph-container', 'children'),
@@ -220,4 +260,82 @@ def func(n_clicks,all_rows_data):
 
     return dcc.send_data_frame(dff.to_csv, "mydf_csv.csv")
     
+#----------------------------------------------------------------------
+# phylogeography trees : parameters
 
+@app.callback(
+    Output('newick-files-container2_1','children'),
+    Input('submit-forTree','n_clicks'),
+    State('col-specimens','value')
+)
+def update_output(n,specimen):
+    if n is None:
+        return dash.no_update
+    else:
+        return dcc.Markdown('In this file, the name of column containing the specimens names is :  **{}**'.format(specimen))
+
+@app.callback(
+    Output('newick-files-container3_1','children'),
+    Input('submit-forTree','n_clicks'),
+    State('col-analyze', 'value')
+)
+def update_output(n,names):
+    if n is None:
+        return dash.no_update
+    else:
+        return dcc.Markdown('In order to create reference trees, the columns selected are:  **{}**'.format("; ".join(names)))
+    
+# phylogeography trees : newick files
+@app.callback(
+    Output('newick-files-container4_1','children'),
+    Input('submit-forTree','n_clicks'),
+    State('col-specimens','value'),
+    State('col-analyze', 'value')
+)
+
+def update_output(n,specimen,names):
+    file_name = "donnees.csv"
+    if n is None:
+        return dash.no_update
+    else:
+        col_names = [specimen] + list(names)
+        tree.create_tree(file_name, list(col_names)) # run tree.py
+        
+        tree_path = os.listdir()
+        tree_files = []
+        for item in tree_path:
+            if item.endswith("_newick"):
+                tree_files.append(item)
+                #print(item)
+        #print(tree_files)
+
+        outputs_container = html.Div([
+            html.Hr(),
+            html.H6('output files:'),
+            html.H5("; ".join(tree_files)),
+            dcc.Input(id = "input_fileName", type = "text", 
+                    placeholder = "Enter the name of the file to be downloaded", 
+                    style= {'width': '68%','marginRight':'20px'}),
+            dbc.Button(id='btn-newick',
+                            children=[html.I(className="fa fa-download mr-1"), "Download newick files"],
+                            color="info",
+                            className="mt-1"
+                                    ),
+            dcc.Download(id="download-newick-1"),
+
+        ])
+
+        return outputs_container
+
+# for download button
+@app.callback(
+    Output("download-newick-1", "data"),
+    Input("btn-newick", "n_clicks"),
+    State('input_fileName','value'), 
+    prevent_initial_call=True,
+)
+def func(n_clicks, fileName):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        return dcc.send_file(fileName)

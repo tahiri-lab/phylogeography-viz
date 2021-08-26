@@ -5,6 +5,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output,State
 import dash_bootstrap_components as dbc
 from dash_html_components import H4
+from dash_html_components.Br import Br
 from dash_html_components.Hr import Hr
 import plotly.express as px
 import pandas as pd
@@ -175,7 +176,7 @@ def parse_contents(contents, filename, date):
                                 html.P("Select data for choropleth map"),
                                 dcc.Dropdown(id='map-data',
                                             options=[{'label':x, 'value':x} for x in df.columns]),
-                                #html.Hr(),
+                                html.Br(),
                                 dcc.RadioItems(id='choose-graph-type',
                                                 options=[
                                                     {'label': 'Bar Graph', 'value': 'Bar'},
@@ -183,19 +184,21 @@ def parse_contents(contents, filename, date):
                                                 ],
                                                 value='Bar'
                                             ),  
+                                html.Br(),
                                 html.Button(id="submit-button", children="Create Graph"),
                                 html.Hr(),
                             # parameters for creating phylogeography trees
                                 html.H2('Create Phylogeography Trees', style={"textAlign": "center"}),  #title
-                                html.P("Inset the name of the column containing the specimens names"),
+                                html.H4("Inset the name of the column containing the specimens names"),
                                 dcc.Dropdown(id='col-specimens',
                                             options=[{'label':x, 'value':x} for x in df.columns]),
-                                html.P("select the name of the column to analyze"),
+                                html.H4("select the name of the column to analyze"),
                                 html.P('The values of the column must be numeric for the program to work properly.'),
                                 dcc.Checklist(id = 'col-analyze',
                                             options =[{'label': x, 'value': x} for x in df.columns],
                                             labelStyle={'display': 'inline-block'}
                                         ),
+                                html.Br(),
                                 html.Button(id="submit-forTree", children="Create Newick files"),  
                                 html.Hr(),
 
