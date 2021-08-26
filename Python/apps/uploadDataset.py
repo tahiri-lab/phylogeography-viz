@@ -196,7 +196,7 @@ def parse_contents(contents, filename, date):
                                 html.P('The values of the column must be numeric for the program to work properly.'),
                                 dcc.Checklist(id = 'col-analyze',
                                             options =[{'label': x, 'value': x} for x in df.columns],
-                                            labelStyle={'display': 'inline-block'}
+                                            labelStyle={'display': 'inline-block','marginRight':'20px'}
                                         ),
                                 html.Br(),
                                 html.Button(id="submit-forTree", children="Create Newick files"),  

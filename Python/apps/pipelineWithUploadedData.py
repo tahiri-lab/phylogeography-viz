@@ -8,17 +8,24 @@ import plotly.express as px
 import pandas as pd
 import pathlib
 from app import app
-
+import os
 import base64
 import datetime
 import io
+import pipeline
 
 # get relative data folder
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../datasets").resolve()
 
-#dfg = pd.read_csv(DATA_PATH.joinpath("theData_IfWeHave.csv"))
+# get all the newick files produced 
+tree_path = os.listdir()
+tree_files = []
+for item in tree_path:
+    if item.endswith("_newick"):
+        tree_files.append(item)
 
+#-------------------------------------------
 layout = dbc.Container([
     html.H1('Phylogenetic Tree', style={"textAlign": "center"}),  #title
     
@@ -93,27 +100,16 @@ layout = dbc.Container([
             ),
     ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around
     
-    dbc.Row([
-
-        dbc.Col([
-            html.Div(id='output-fasta'),
-        ],# width={'size':3, 'offset':1, 'order':1},
-           xs=12, sm=12, md=12, lg=10, xl=10
-        ),
-    ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
-    
-    # for sliding window siza & step size 
+    # for sliding window size & step size 
     dbc.Row([
 
         dbc.Col([
             html.Div([
                 html.H3("Sliding Window Size"),
-                dcc.Slider(id='WindowSize-slider',
-                            min=1,  
-                            max=50,
-                            step=1,
-                            value=15),
-                html.Div(id='WindowSize-slider-output-container')        
+                dcc.Input(id = "input_windowSize1", type = "number", min = 0, max = 5000,
+                    placeholder = "Enter Sliding Window Size", 
+                    style= {'width': '65%','marginRight':'20px'}), 
+                html.Div(id='WindowSize-output-container1')        
                     ]),
 
         ],# width={'size':3, 'offset':1, 'order':1},
@@ -123,28 +119,54 @@ layout = dbc.Container([
         dbc.Col([
             html.Div([
                 html.H3("Step Size"),
-                dcc.Slider(id='StepSize-slider',
-                            min=0,
-                            max=50,
-                            step=1,
-                            value=10),
-                html.Div(id='StepSize-slider-output-container')        
+                dcc.Input(id = "input_stepSize1", type = "number", min = 0, max = 5000, 
+                    placeholder = "Enter Step Size", 
+                    style= {'width': '65%','marginRight':'20px'}),
+                html.Div(id='StepSize-output-container1')        
                     ]),
         ],# width={'size':3, 'offset':1, 'order':1},
            xs=12, sm=12, md=12, lg=5, xl=5
         ),
     ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
 
-    # the row for the tree 
+    # select the files of reference tree
     dbc.Row([
+            dbc.Col([
+                html.Br(),
+                html.Hr(),
+                html.H3("Select the file(s) of reference trees"),
+                dcc.Checklist(id = 'reference_trees1',
+                            options =[{'label': x, 'value': x} for x in tree_files],
+                            labelStyle={'display': 'inline-block','marginRight':'20px'})
+            ],# width={'size':3, 'offset':1, 'order':1},
+            xs=12, sm=12, md=12, lg=10, xl=10
+            ),
+        ], no_gutters=True, justify='around'),
 
+    dbc.Row([
         dbc.Col([
-            html.Div(id='my-map'),
+            #html.Br(),
+            html.Hr(),
+            #html.Br(),
+            html.Div(id='output-fasta'),
         ],# width={'size':3, 'offset':1, 'order':1},
            xs=12, sm=12, md=12, lg=10, xl=10
         ),
     ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
-
+    
+    #submit button
+    dbc.Row([
+        dbc.Col([
+            html.Br(),
+            html.Button(id="submit-button", children="Submit"),
+            html.Br(),
+            html.Hr(),
+        ],# width={'size':3, 'offset':1, 'order':1},
+           xs=12, sm=12, md=12, lg=10, xl=10
+        ),
+    ], no_gutters=True, justify='around'),
+   
+    
 ], fluid=True)
 
 
@@ -165,14 +187,14 @@ def update_output(value):
 
 # callback for sliding window siza & step size; view the value chosen
 @app.callback(
-    dash.dependencies.Output('WindowSize-slider-output-container', 'children'),
-    [dash.dependencies.Input('WindowSize-slider', 'value')])
+    dash.dependencies.Output('WindowSize-output-container1', 'children'),
+    [dash.dependencies.Input('input_windowSize1', 'value')])
 def update_output(value):
     return 'You have selected {}'.format(value)
 
 @app.callback(
-    dash.dependencies.Output('StepSize-slider-output-container', 'children'),
-    [dash.dependencies.Input('StepSize-slider', 'value')])
+    dash.dependencies.Output('StepSize-output-container1', 'children'),
+    [dash.dependencies.Input('input_stepSize1', 'value')])
 def update_output(value):
     return 'You have selected {}'.format(value)
 
@@ -187,13 +209,9 @@ def parse_fasta_contents(contents, filename, date):
             # Assume that the user uploaded a fasta file
             seq_upload = decoded.decode('utf-8')
             return html.Div([
-                        html.P(filename),
+                        dcc.Markdown('You have uploades file(s):  **{}**'.format(filename)),
                         #html.H6(datetime.datetime.fromtimestamp(date)),
                         #html.Small(seq_upload),
-                        
-                        html.Button(id="submit-button", children="Create Graph"),
-                        html.Hr(),
-
                         # For debugging, display the raw contents provided by the web browser
                         #html.Div('Raw Content'),
                         #html.Pre(contents[0:200] + '...', style={
