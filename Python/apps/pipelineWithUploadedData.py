@@ -165,6 +165,14 @@ layout = dbc.Container([
            xs=12, sm=12, md=12, lg=10, xl=10
         ),
     ], no_gutters=True, justify='around'),
+
+    # for output of pipeline
+    dbc.Row([
+            dbc.Col([
+                html.Div(id='output-container'),
+            ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+         ],no_gutters=True, justify='around'),
    
     
 ], fluid=True)

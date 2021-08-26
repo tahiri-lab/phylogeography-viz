@@ -16,7 +16,7 @@ data_names = ["Humidité_relative_à_2m_%_newick",
 reference_gene_file = 'output/reference_gene.fasta'
 
 '''
-#-----------------------------------------
+#-----------------------------------------  
 def prepareDirectory():
     path_output_windows = './output/windows'                            
     isExist = os.path.exists(path_output_windows)

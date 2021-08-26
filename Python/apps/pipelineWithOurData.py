@@ -111,18 +111,18 @@ layout = dbc.Container([
     ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
 
 # select the files of reference tree
-dbc.Row([
-        dbc.Col([
-            html.Br(),
-            html.Hr(),
-            html.H3("Select the file(s) of reference trees"),
-            dcc.Checklist(id = 'reference_trees',
-                        options =[{'label': x, 'value': x} for x in tree_files],
-                        labelStyle={'display': 'inline-block','marginRight':'20px'}),
-        ],# width={'size':3, 'offset':1, 'order':1},
-           xs=12, sm=12, md=12, lg=10, xl=10
-        ),
-    ], no_gutters=True, justify='around'),
+    dbc.Row([
+            dbc.Col([
+                html.Br(),
+                html.Hr(),
+                html.H3("Select the file(s) of reference trees"),
+                dcc.Checklist(id = 'reference_trees',
+                            options =[{'label': x, 'value': x} for x in tree_files],
+                            labelStyle={'display': 'inline-block','marginRight':'20px'}),
+            ],# width={'size':3, 'offset':1, 'order':1},
+            xs=12, sm=12, md=12, lg=10, xl=10
+            ),
+        ], no_gutters=True, justify='around'),
 
     #submit button
     dbc.Row([
@@ -135,6 +135,14 @@ dbc.Row([
            xs=12, sm=12, md=12, lg=10, xl=10
         ),
     ], no_gutters=True, justify='around'),
+
+    # for output of pipeline
+    dbc.Row([
+            dbc.Col([
+                html.Div(id='output-container1'),
+            ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+         ],no_gutters=True, justify='around'),
        
 
         
@@ -159,7 +167,32 @@ def update_output(value):
 def update_output(value):
     return 'You have selected {:0.1f}%'.format(value)
 
+#-------------------------------------------------
+# run pipeline
 
+@app.callback(
+    Output('output-container1', 'children'),
+    Input("submit-button", "n_clicks"),
+    State('BootstrapThreshold-slider1','value'),
+    State('RF-distanceThreshold-slider1','value'),
+    State('input_windowSize','value'),
+    State('input_stepSize','value'),
+    State('reference_trees','value'),
+    )
 
+def update_output(n_clicks, bootstrap_threshold, rf_threshold, window_size, step_size, data_names):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        reference_gene_file = 'output/reference_gene.fasta'
+        pipeline.createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+        output_container = html.Div([
+            dcc.Markdown('bootstrap_thrshold :  **{}**'.format(bootstrap_threshold)),
+            dcc.Markdown('rf_threshold :  **{}**'.format(rf_threshold)),
+            dcc.Markdown('window_size :  **{}**'.format(window_size)),
+            dcc.Markdown('step_size :  **{}**'.format(step_size)),
+            dcc.Markdown('data_names :  {}'.format(data_names)),
+    ])
 
+    return output_container
 
