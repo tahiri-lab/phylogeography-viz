@@ -23,6 +23,33 @@ layout = dbc.Container([
     html.H1('Phylogenetic Tree', style={"textAlign": "center"}),  #title
     
     # the first row
+    dbc.Row([
+        dbc.Col([
+            dcc.Upload(
+                id='upload-data1',
+                children=html.Div([
+                    'Drag and Drop or ',
+                    html.A('Select .fasta Files')
+                ]),
+                style={
+                    'width': '99%',
+                    'height': '60px',
+                    'lineHeight': '60px',
+                    'borderWidth': '1px',
+                    'borderStyle': 'dashed',
+                    'borderRadius': '5px',
+                    'textAlign': 'center',
+                    'margin': '10px'
+                },
+                # Allow multiple files to be uploaded
+                multiple=True
+            ),
+        ],# width={'size':3, 'offset':1, 'order':1},
+           xs=12, sm=12, md=12, lg=10, xl=10
+        ),
+    ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
+
+    # The second row 
      dbc.Row([
 
         dbc.Col([
@@ -65,33 +92,6 @@ layout = dbc.Container([
             xs=12, sm=12, md=12, lg=5, xl=5
             ),
     ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around
-
-    # the second row (part)
-    dbc.Row([
-        dbc.Col([
-            dcc.Upload(
-                id='upload-data1',
-                children=html.Div([
-                    'Drag and Drop or ',
-                    html.A('Select .fasta Files')
-                ]),
-                style={
-                    'width': '99%',
-                    'height': '60px',
-                    'lineHeight': '60px',
-                    'borderWidth': '1px',
-                    'borderStyle': 'dashed',
-                    'borderRadius': '5px',
-                    'textAlign': 'center',
-                    'margin': '10px'
-                },
-                # Allow multiple files to be uploaded
-                multiple=True
-            ),
-        ],# width={'size':3, 'offset':1, 'order':1},
-           xs=12, sm=12, md=12, lg=10, xl=10
-        ),
-    ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
     
     dbc.Row([
 
