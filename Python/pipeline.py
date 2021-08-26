@@ -18,7 +18,7 @@ reference_gene_file = 'output/reference_gene.fasta'
 '''
 #-----------------------------------------
 def prepareDirectory():
-    path_output_windows = './output/windows'                             
+    path_output_windows = './output/windows'                            
     isExist = os.path.exists(path_output_windows)
 
     if isExist:

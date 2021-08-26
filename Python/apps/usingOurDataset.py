@@ -46,10 +46,10 @@ layout = dbc.Container([
                             sort_action="native",       # enables data to be sorted per-column by user or not ('none')
                             sort_mode="single",         # sort across 'multi' or 'single' columns
                             column_selectable="multi",  # allow users to select 'multi' or 'single' columns
-                            row_selectable="multi",     # allow users to select 'multi' or 'single' rows
-                            row_deletable=True,         # choose if user can delete a row (True) or not (False)
+                            #row_selectable="multi",     # allow users to select 'multi' or 'single' rows
+                            row_deletable=False,         # choose if user can delete a row (True) or not (False)
                             selected_columns=[],        # ids of columns that user selects
-                            selected_rows=[],           # indices of rows that user selects
+                            #selected_rows=[],           # indices of rows that user selects
                             page_action="native",       # all data is passed to the table up-front or not ('none')
                             page_current=0,             # page number that user is on
                             page_size=6,                # number of rows visible per page
@@ -121,7 +121,10 @@ layout = dbc.Container([
 
 def parse_contents_fromInteractiveDT(all_rows_data):
     # Creating a new data frame based on the rows that I have left after I filter
+
     dff = pd.DataFrame(all_rows_data)
+
+    #print("shape",dff.shape)
 
     return html.Div([
         html.P("Select X axis data"),
