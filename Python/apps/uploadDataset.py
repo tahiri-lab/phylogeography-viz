@@ -318,8 +318,8 @@ def update_output(n,file_name,specimen,names):
         for item in tree_path:
             if item.endswith("_newick"):
                 tree_files.append(item)
-                print(item)
-        print(tree_files)
+                #print(item)
+        #print(tree_files)
 
         outputs_container = html.Div([
             html.Hr(),
