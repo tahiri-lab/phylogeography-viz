@@ -1,3 +1,39 @@
+import smtplib
+from email.message import EmailMessage
+#import config
+
+
+def send_email(subject,msg,reciever):
+    EMAIL_ADDRESS = 'testpythonsend08@gmail.com'
+    PASSWORD = 'woshixiangzai888'
+
+    msg = EmailMessage()
+    msg['Subject'] = 'Subject of the Email' # Subject of Email
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = '806981384wl@gmail.com' # Reciver of the Mail
+    msg.set_content('Mail Body') # Email body or Content
+
+    
+    with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
+           
+        smtp.login(EMAIL_ADDRESS,PASSWORD)
+        smtp.send_message(msg)
+      
+    print("Success: Email sent!")
+    
+
+subject = "HI"
+msg = "hjkhlk"
+
+reciever = '806981384wl@gmail.com'
+
+send_email(subject,msg,reciever)
+
+
+
+
+
+'''
 # Import smtplib for the actual sending function
 import smtplib
 
@@ -21,3 +57,4 @@ msg['To'] = you
 s = smtplib.SMTP('localhost')
 s.send_message(msg)
 s.quit()
+'''
