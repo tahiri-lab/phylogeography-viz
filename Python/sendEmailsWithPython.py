@@ -18,9 +18,9 @@ def send_email(subject,msg,reciever):
     except:
         print("Email failed to send！")
 
-subject = "HI, papa"
-msg = "老爸，我是翔宝，爱你哟"
-#reciever = 'allenliulining@gmail.com'
-reciever = '806981384wl@gmail.com@gmail.com'
+subject = "HI"
+msg = "hjkhlk"
+
+reciever = '80@gmail.com'
 
 send_email(subject,msg,reciever)

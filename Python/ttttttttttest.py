@@ -11,7 +11,7 @@ with open(textfile) as fp:
     msg = EmailMessage()
     msg.set_content(fp.read())
 
-me = '2833747258@qq.com'
+me = 'testpythonsend08@gmail.com'
 you = '806981384wl@gmail.com@gmail.com'
 msg['Subject'] = f'The contents of {textfile}'
 msg['From'] = me
