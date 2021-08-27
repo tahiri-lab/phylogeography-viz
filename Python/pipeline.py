@@ -11,11 +11,11 @@ bootstrap_threshold = 0
 rf_threshold = 100
 window_size = 5000
 step_size = 100 
-data_names = ["Humidité_relative_à_2m_%_newick",
-              "T_min_à_2m_C_newick"]
+data_names = ["Précipitation_totale_sur_le_mois_mm_newick",
+              "T_max_à_2m_C_newick"]
 reference_gene_file = 'output/reference_gene.fasta'
-
 '''
+
 #-----------------------------------------  
 def prepareDirectory():
     path_output_windows = './output/windows'                            
@@ -40,7 +40,7 @@ def prepareDirectory():
         if item == "output.csv" or item.startswith("RAxML_") or item.startswith("outtree"):
             os.remove(item)
 
-prepareDirectory()
+#prepareDirectory()
 
 #--------------------------------------------------------------
 #'1. Use the whole DNA sequences'
@@ -273,7 +273,7 @@ genes_chosen = ["ORF1ab","ORF3a","ORF10"]
 
 def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen):
 
-    prepareDirectory()
+    #prepareDirectory()
 
     genes = {'ORF1ab': 'ATGGAGAGCC(.*)TAACAACTAA', 'S': 'ATGTTTGTTT(.*)TTACACATAA', 'ORF3a': 'ATGGATTTGT(.*)GCCTTTGTAA', 'ORF3b': 'ATGAGGCTTT(.*)GCCTTTGTAA',
             'E': 'ATGTACTCAT(.*)TCTGGTCTAA', 'M': 'ATG[GT]CAGATT(.*)TGTACAGTAA', 'ORF6': 'ATGTTTCATC(.*)GATTGA[CT]TAA', 'ORF7a': 'ATGAAAATTAT(.*)GACAGAATGA',
