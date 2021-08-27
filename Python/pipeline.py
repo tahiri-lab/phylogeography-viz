@@ -6,7 +6,7 @@ from csv import writer
 import shutil
 
 # ATTENTION AUX NOMS DES FICHIERS AVEC LES _
-'''
+
 bootstrap_threshold = 0
 rf_threshold = 100
 window_size = 5000
@@ -14,7 +14,7 @@ step_size = 100
 data_names = ["Précipitation_totale_sur_le_mois_mm_newick",
               "T_max_à_2m_C_newick"]
 reference_gene_file = 'output/reference_gene.fasta'
-'''
+
 
 #-----------------------------------------  
 def prepareDirectory():
@@ -179,7 +179,7 @@ def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_se
             calculateRfDistance(tree)
             rfn = standardizedRfDistance(number_seq)
             if rfn == None:                 #  '<=' not supported between instances of 'NoneType' and 'int'
-                rfn = 0                     # fix it 
+                rfn = 100                     # fix it 
             if rfn <= rf_threshold:
                 runRaxML(aligned_file, gene, tree)
                 cleanUp(aligned_file, tree)
@@ -190,7 +190,7 @@ def filterResults(gene, bootstrap_threshold, rf_threshold, data_names, number_se
                     calculateRfDistance(tree)
                     rfn_rax = standardizedRfDistance(number_seq)
                     if rfn_rax == None:     #  '<=' not supported between instances of 'NoneType' and 'int'
-                        rfn_rax = 0         # fix it 
+                        rfn_rax = 100         # fix it 
                     if rfn_rax <= rf_threshold:
                         addToCsv(gene, tree, aligned_file, bootstrap_rax, rfn_rax)
                         keepFiles(gene, aligned_file, tree)
@@ -315,6 +315,6 @@ def getGene(gene, pattern):
 
 #if __name__ == '__main__':
 #    menu()
-#createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
 
 #displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
