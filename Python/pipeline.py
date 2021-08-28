@@ -6,7 +6,7 @@ from csv import writer
 import shutil
 
 # ATTENTION AUX NOMS DES FICHIERS AVEC LES _
-
+'''
 bootstrap_threshold = 0
 rf_threshold = 100
 window_size = 5000
@@ -14,7 +14,7 @@ step_size = 100
 data_names = ["Précipitation_totale_sur_le_mois_mm_newick",
               "T_max_à_2m_C_newick"]
 reference_gene_file = 'output/reference_gene.fasta'
-
+'''
 
 #-----------------------------------------  
 def prepareDirectory():
@@ -268,53 +268,7 @@ def keepFiles(gene, aligned_file, tree):
     subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
     subprocess.call(["mv", "output/windows/"+aligned_file+".reduced", output_path])
 
-#-----------------------------------------  
-#'2. Study specific genes of SARS-CoV-2'
 
-genes_chosen = ["ORF1ab","ORF3a","ORF10"]
-
-def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen):
-
-    #prepareDirectory()
-
-    genes = {'ORF1ab': 'ATGGAGAGCC(.*)TAACAACTAA', 'S': 'ATGTTTGTTT(.*)TTACACATAA', 'ORF3a': 'ATGGATTTGT(.*)GCCTTTGTAA', 'ORF3b': 'ATGAGGCTTT(.*)GCCTTTGTAA',
-            'E': 'ATGTACTCAT(.*)TCTGGTCTAA', 'M': 'ATG[GT]CAGATT(.*)TGTACAGTAA', 'ORF6': 'ATGTTTCATC(.*)GATTGA[CT]TAA', 'ORF7a': 'ATGAAAATTAT(.*)GACAGAATGA',
-            'ORF7b': 'ATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTTGTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTGCAAGATCATAATGAAACTTGTCACGCCTAA',
-            'ORF8': 'ATGAAATTTCTTGTTTT(.*)TTT[TC]ATCTAA', 'N': 'ATGAAATTTCTTGTTTT(.*)TTT[TC]ATCTAA', 'ORF10': 'ATGGGCTATA(.*)TCTCACATAG'}
-    for gene in genes_chosen:
-        pattern = genes.get(gene)
-        getGene(gene, pattern)
-        createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-        subprocess.call(["make", "clean"])
-        break
-
-def getGene(gene, pattern): 
-    sequences_file = open("output/reference_gene.fasta", "r").read()
-    list_of_sequences = sequences_file.split(">")
-    s = pattern
-    directory_name = gene + "_gene"
-    file_name = gene + "_gene.fasta"
-    directory_path = os.path.join("output", directory_name)
-
-    if not os.path.exists(directory_path):          #??? 
-        os.makedirs(directory_path)
-
-    #file_path = os.path.join("output", directory_name, file_name)
-
-    new_file = open(directory_path + '/'+ file_name, "w")
-    for index in range(len(list_of_sequences)):
-        if list_of_sequences[index] == "":
-            continue
-        name = list_of_sequences[index].split("\n")[0]
-        gene_sequence = list_of_sequences[index].replace("\n", "")
-        gene_sequence = (re.search(s, gene_sequence).group())
-        new_file.writelines(">" + name + "\n")
-        new_file.writelines(gene_sequence + "\n")
-
-    new_file.close()
-
-#if __name__ == '__main__':
-#    menu()
-createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+#createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
 
 #displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)

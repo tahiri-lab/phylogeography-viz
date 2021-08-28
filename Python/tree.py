@@ -4,7 +4,7 @@ import os
 import pathlib
 
 
-
+'''
 file_name = "donnees.csv"
 
 specimen = 'Nom du specimen'   #"Please enter the name of the colum containing the specimens names: "
@@ -12,6 +12,7 @@ specimen = 'Nom du specimen'   #"Please enter the name of the colum containing t
 names = ['Nom du specimen','T min à 2m C',
         'T max à 2m C',
         'Humidité relative à 2m %']
+'''
 #-----------------------------------------------------
 def prepareDirectory():
     # delete the results of last analysis, if we have    ???
@@ -85,15 +86,8 @@ def create_tree(file_name, names):
     subprocess.call(["rm", "intree"])
 
 
-# if __name__ == '__main__':
-#    try:
-#        create_tree(file_name, names)
-#    except:
-#        print("An error has occured.")
-#    else:
-#        subprocess.call(["rm", "intree"])
 
 
-create_tree(file_name, names)
+#create_tree(file_name, names)
 
 #prepareDirectory()

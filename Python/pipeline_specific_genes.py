@@ -6,7 +6,7 @@ from csv import writer
 import shutil
 
 # ATTENTION AUX NOMS DES FICHIERS AVEC LES _
-
+'''
 bootstrap_threshold = 0
 rf_threshold = 100
 window_size = 5000
@@ -14,7 +14,7 @@ step_size = 100
 data_names = ["Précipitation_totale_sur_le_mois_mm_newick",
               "T_max_à_2m_C_newick"]
 reference_gene_file = 'output/reference_gene.fasta'
-
+'''
 
 #-----------------------------------------  
 def prepareDirectory():
@@ -50,12 +50,9 @@ def prepareDirectory():
 
 
 
-
-
 #-----------------------------------------  
 #'2. Study specific genes of SARS-CoV-2'
 
-genes_chosen = ["ORF1ab","ORF3a","ORF10"]
 
 def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen):
 
@@ -308,4 +305,5 @@ def keepFiles(gene, aligned_file, tree):
     subprocess.call(["cp", input_path, output_path]) # on garde l'ASM initial
     subprocess.call(["cp", "outtree", tree_path]) # on transfere l'arbre a garder dans le bon fichier
 
-displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
+#genes_chosen = ["ORF1ab","ORF3a","ORF10"]
+#displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
