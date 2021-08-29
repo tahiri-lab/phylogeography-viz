@@ -39,6 +39,9 @@ def prepareDirectory():
     for item in delete_path2:
         if item == "output.csv" or item.startswith("RAxML_") or item.startswith("outtree"):
             os.remove(item)
+    
+    with open('output.csv', 'w') as f:
+        f.write("Gene,Arbre phylogeographique,Position ASM,Bootstrap moyen,RF normalise\n")
 
 #prepareDirectory()
 

@@ -212,6 +212,7 @@ def update_output(n_clicks, bootstrap_threshold, rf_threshold, window_size, step
             dcc.Markdown('step_size :  **{}**'.format(step_size)),
             dcc.Markdown('data_names :  {}'.format(data_names)),
             dcc.Markdown('genes_chosen :  **{}**'.format(genes_chosen)),
+            dcc.Markdown('Done. Please click on "Check Results" in the left side bar to view the results.'),
     ])
 
     return output_container

@@ -1,0 +1,6 @@
+Gene,Arbre phylogeographique,Position ASM,Bootstrap moyen,RF normalise
+output/reference_gene.fasta,Pression_en_surface_kPa_newick,4800_9800,16.0,56.666666666666664
+output/reference_gene.fasta,Pression_en_surface_kPa_newick,15600_20600,27.2,60.0
+output/reference_gene.fasta,Pression_en_surface_kPa_newick,10200_15200,22.666666666666668,60.0
+output/reference_gene.fasta,Pression_en_surface_kPa_newick,24000_29000,51.0,70.0
+output/reference_gene.fasta,Pression_en_surface_kPa_newick,13800_18800,32.666666666666664,63.33333333333333
