@@ -27,6 +27,9 @@ for item in tree_path:
     if item.endswith("_newick"):
         tree_files.append(item)
 
+#reference gene max length, for the validation of 'sliding window size' and 'step size'
+ref_genes_len = 29893
+
 layout = dbc.Container([
     html.H1('Phylogenetic Tree', style={"textAlign": "center"}),  #title
     
@@ -75,14 +78,6 @@ layout = dbc.Container([
             ),
     ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around
     
-    dbc.Row([
-
-        dbc.Col([
-            html.Div(id='output-fasta1'),
-        ],# width={'size':3, 'offset':1, 'order':1},
-           xs=12, sm=12, md=12, lg=10, xl=10
-        ),
-    ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
     
     # for sliding window siza & step size 
     dbc.Row([
@@ -90,9 +85,10 @@ layout = dbc.Container([
         dbc.Col([
             html.Div([
                 html.H3("Sliding Window Size"),
-                dcc.Input(id = "input_windowSize", type = "number", min = 0, max = 5000,
-                    placeholder = "Enter Sliding Window Size", 
-                    style= {'width': '65%','marginRight':'20px'}),      
+                dcc.Input(id = "input_windowSize", type = "number", min = 0, max = ref_genes_len-1,
+                    placeholder = "Enter Sliding Window Size", value = 0,
+                    style= {'width': '65%','marginRight':'20px'}),
+                html.Div(id='input_windowSize-container1'),      
                     ]),
 
         ],# width={'size':3, 'offset':1, 'order':1},
@@ -102,9 +98,10 @@ layout = dbc.Container([
         dbc.Col([
             html.Div([
                 html.H3("Step Size"),
-                dcc.Input(id = "input_stepSize", type = "number", min = 0, max = 5000, 
-                    placeholder = "Enter Step Size", 
-                    style= {'width': '65%','marginRight':'20px'}),     
+                dcc.Input(id = "input_stepSize", type = "number", min = 0, max = ref_genes_len-1, 
+                    placeholder = "Enter Step Size", value = 0,
+                    style= {'width': '65%','marginRight':'20px'}),
+                html.Div(id='input_stepSize-container1'), 
                     ]),
         ],# width={'size':3, 'offset':1, 'order':1},
            xs=12, sm=12, md=12, lg=5, xl=5
@@ -167,6 +164,26 @@ def update_output(value):
     [dash.dependencies.Input('RF-distanceThreshold-slider1', 'value')])
 def update_output(value):
     return 'You have selected {:0.1f}%'.format(value)
+
+@app.callback(
+    dash.dependencies.Output('input_windowSize-container1', 'children'),
+    [dash.dependencies.Input('input_stepSize', 'value')])
+def update_output(value):
+    if value == None:
+        value_max = ref_genes_len - 1
+    else:
+        value_max = ref_genes_len - 1 - value
+    return 'The input value must an integer from o to {}'.format(value_max)
+
+@app.callback(
+    dash.dependencies.Output('input_stepSize-container1', 'children'),
+    [dash.dependencies.Input('input_windowSize', 'value')])
+def update_output(value):
+    if value == None:
+        value_max = ref_genes_len - 1
+    else:
+        value_max = ref_genes_len - 1 - value
+    return 'The input value must be an integer from 0 to {}'.format(value_max)
 
 #-------------------------------------------------
 # run pipeline

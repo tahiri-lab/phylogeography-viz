@@ -29,10 +29,29 @@ for item in tree_path:
 #Study specific genes of SARS-CoV-2
 genes_Cov = ['ORF1ab', 'S', 'ORF3a', 'ORF3b','E', 'M', 'ORF6', 'ORF7a','ORF7b','ORF8', 'N', 'ORF10']
 
+#reference gene max length, for the validation of 'sliding window size' and 'step size'
+ref_genes_len = {'ORF1ab': 21290, 'S':3825, 'ORF3a':828, 'ORF3b':456,'E':228, 'M':669, 'ORF6':9704, 
+                    'ORF7a':366,'ORF7b':132,'ORF8':366, 'N':366, 'ORF10':117}
+
 layout = dbc.Container([
     html.H1('Phylogenetic Tree', style={"textAlign": "center"}),  #title
     
-    # the first row
+    # select genes
+    dbc.Row([
+            dbc.Col([
+                html.Br(),
+                html.H3("Study specific genes of SARS-CoV-2"),
+                dcc.Checklist(id = 'genes_selected2',
+                            options =[{'label': x, 'value': x} for x in genes_Cov],
+                            value = [genes_Cov[0]],
+                            labelStyle={'display': 'inline-block','marginRight':'20px'}),
+                html.Br(),
+                html.Hr(),
+            ],# width={'size':3, 'offset':1, 'order':1},
+            xs=12, sm=12, md=12, lg=10, xl=10
+            ),
+        ], no_gutters=True, justify='around'),
+
     
      dbc.Row([
 
@@ -92,9 +111,10 @@ layout = dbc.Container([
         dbc.Col([
             html.Div([
                 html.H3("Sliding Window Size"),
-                dcc.Input(id = "input_windowSize2", type = "number", min = 0, max = 5000,
-                    placeholder = "Enter Sliding Window Size", 
-                    style= {'width': '65%','marginRight':'20px'}),      
+                dcc.Input(id = "input_windowSize2", type = "number", min = 0, max = max(ref_genes_len.values())-1,
+                    placeholder = "Enter Sliding Window Size", value = 0,
+                    style= {'width': '65%','marginRight':'20px'}),  
+                html.Div(id='input_windowSize-container2'),    
                     ]),
 
         ],# width={'size':3, 'offset':1, 'order':1},
@@ -104,28 +124,16 @@ layout = dbc.Container([
         dbc.Col([
             html.Div([
                 html.H3("Step Size"),
-                dcc.Input(id = "input_stepSize2", type = "number", min = 0, max = 5000, 
-                    placeholder = "Enter Step Size", 
-                    style= {'width': '65%','marginRight':'20px'}),     
+                dcc.Input(id = "input_stepSize2", type = "number", min = 0, max = max(ref_genes_len.values())-1, 
+                    placeholder = "Enter Step Size", value = 0,
+                    style= {'width': '65%','marginRight':'20px'}), 
+                html.Div(id='input_stepSize-container2'),    
                     ]),
         ],# width={'size':3, 'offset':1, 'order':1},
            xs=12, sm=12, md=12, lg=5, xl=5
         ),
     ], no_gutters=True, justify='around'),  # Horizontal:start,center,end,between,around 
 
-# select genes
-    dbc.Row([
-            dbc.Col([
-                html.Br(),
-                html.Hr(),
-                html.H3("Study specific genes of SARS-CoV-2"),
-                dcc.Checklist(id = 'genes_selected2',
-                            options =[{'label': x, 'value': x} for x in genes_Cov],
-                            labelStyle={'display': 'inline-block','marginRight':'20px'}),
-            ],# width={'size':3, 'offset':1, 'order':1},
-            xs=12, sm=12, md=12, lg=10, xl=10
-            ),
-        ], no_gutters=True, justify='around'),
 
 # select the files of reference tree
     dbc.Row([
@@ -183,6 +191,38 @@ def update_output(value):
     [dash.dependencies.Input('RF-distanceThreshold-slider2', 'value')])
 def update_output(value):
     return 'You have selected {:0.1f}%'.format(value)
+
+@app.callback(
+    dash.dependencies.Output('input_windowSize-container2', 'children'),
+    [dash.dependencies.Input('input_stepSize2', 'value'),
+    dash.dependencies.Input('genes_selected2', 'value')
+    ])
+def update_output(stepSize,genes):
+    len_list = []
+    for gen in genes:
+        len_list.append(ref_genes_len.get(gen))
+    min_len = min(len_list)
+    if stepSize == None:
+        value_max = min_len - 1
+    else:
+        value_max = min_len - 1 - stepSize
+    return 'The input value must an integer from o to {}'.format(value_max)
+
+@app.callback(
+    dash.dependencies.Output('input_stepSize-container2', 'children'),
+    [dash.dependencies.Input('input_windowSize2', 'value'),
+    dash.dependencies.Input('genes_selected2', 'value')])
+def update_output(windowSize,genes):
+    len_list = []
+    for gen in genes:
+        len_list.append(ref_genes_len.get(gen))
+    min_len = min(len_list)
+    if windowSize == None:
+        value_max = min_len - 1
+    else:
+        value_max = min_len - 1 - windowSize
+    return 'The input value must be an integer from 0 to {}'.format(value_max)
+
 
 #-------------------------------------------------
 # run pipeline

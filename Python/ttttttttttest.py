@@ -1,3 +1,12 @@
+
+import time
+
+start = time.time()
+print("hello")
+end = time.time()
+print(end - start)
+
+'''
 import smtplib
 from email.message import EmailMessage
 #import config
@@ -29,7 +38,7 @@ reciever = '806981384wl@gmail.com'
 
 send_email(subject,msg,reciever)
 
-
+'''
 
 
 
