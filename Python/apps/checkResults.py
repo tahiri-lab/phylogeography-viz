@@ -4,6 +4,7 @@ from dash_core_components.Graph import Graph
 import dash_html_components as html
 from dash.dependencies import Input, Output,State
 import dash_bootstrap_components as dbc
+import dash_bio as dashbio
 from dash_html_components.Br import Br
 from dash_html_components.Hr import Hr
 import plotly.express as px
@@ -42,7 +43,7 @@ layout = dbc.Container([
                             selected_rows=[],           # indices of rows that user selects
                             page_action="native",       # all data is passed to the table up-front or not ('none')
                             page_current=0,             # page number that user is on
-                            page_size=12,                # number of rows visible per page
+                            page_size=6,                # number of rows visible per page
                             style_cell={                # ensure adequate header width when text is shorter than cell's text
                                 'minWidth': 95, 'maxWidth': 95, 'width': 95
                             },
@@ -71,11 +72,24 @@ layout = dbc.Container([
                             color="info",
                             className="mt-1"
                                     ),
+                html.Br(),
+                html.Br(),
+                html.Button(id="submit-button-filter1", children="Create Graph"),
                 dcc.Download(id="download-component-csv1"),
 
              ],xs=12, sm=12, md=12, lg=10, xl=10),
 
          ],no_gutters=True, justify='around'),
+
+    # For Graph
+    dbc.Row([
+             dbc.Col([
+                html.Br(),
+                html.Div(id='graph-container1'),
+             ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+         ],no_gutters=True, justify='around'),
+
 
     
 
@@ -85,12 +99,31 @@ layout = dbc.Container([
 #-----------------------------------------------------------------------
 # for download button
 @app.callback(
-    Output("download-component-csv1", "data"),
-    Input("btn-csv1", "n_clicks"),
+    Output("graph-container1", "children"),
+    Input("submit-button-filter1", "n_clicks"),
     State('datatable-interactivity1', "derived_virtual_data"),
     prevent_initial_call=True,
 )
 def func(n_clicks,all_rows_data):
-    dff = pd.DataFrame(all_rows_data)
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        dff = pd.DataFrame(all_rows_data)
+        dff['100-RF normalise'] = 100 - dff['RF normalise']
+        #print(dff['Gene'].unique())
 
-    return dcc.send_data_frame(dff.to_csv, "output.csv")
+        for gene in dff['Gene'].unique():
+            dfg = dff[dff['Gene'] == gene]
+
+            scatter_outpot = px.scatter(
+                data_frame=dfg,
+                x="Position ASM",
+                y="Bootstrap moyen",
+                size = "100-RF normalise",
+                size_max=15,
+                color = "Arbre phylogeographique",
+                opacity = 0.1,
+                #symbol = "Arbre phylogeographique",
+                )
+
+            return dcc.Graph(figure=scatter_outpot)

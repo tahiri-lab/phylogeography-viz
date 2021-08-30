@@ -40,6 +40,9 @@ def prepareDirectory():
         if item == "output.csv" or item.startswith("RAxML_") or item.startswith("outtree"):
             os.remove(item)
 
+    with open('output.csv', 'w') as f:
+        f.write("Gene,Arbre phylogeographique,Position ASM,Bootstrap moyen,RF normalise\n")
+
     path_for_genes = ['./output/E_gene','./output/M_gene','./output/N_gene','./output/ORF10_gene',
                         './output/ORF1ab_gene', './output/ORF3a_gene','./output/ORF3b_gene','./output/ORF6_gene',
                         './output/ORF7a_gene','./output/ORF7b_gene','./output/ORF8_gene','./output/S_gene',
