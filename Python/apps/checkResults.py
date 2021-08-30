@@ -43,7 +43,7 @@ layout = dbc.Container([
                             selected_rows=[],           # indices of rows that user selects
                             page_action="native",       # all data is passed to the table up-front or not ('none')
                             page_current=0,             # page number that user is on
-                            page_size=6,                # number of rows visible per page
+                            page_size=12,                # number of rows visible per page
                             style_cell={                # ensure adequate header width when text is shorter than cell's text
                                 'minWidth': 95, 'maxWidth': 95, 'width': 95
                             },
@@ -112,6 +112,8 @@ def func(n_clicks,all_rows_data):
         dff['100-RF normalise'] = 100 - dff['RF normalise']
         #print(dff['Gene'].unique())
 
+        graphs = []
+
         for gene in dff['Gene'].unique():
             dfg = dff[dff['Gene'] == gene]
 
@@ -120,10 +122,16 @@ def func(n_clicks,all_rows_data):
                 x="Position ASM",
                 y="Bootstrap moyen",
                 size = "100-RF normalise",
-                size_max=15,
+                size_max=10,
                 color = "Arbre phylogeographique",
-                opacity = 0.1,
+                opacity = 0.5,
+                hover_data=['Gene'],
+                facet_col="Arbre phylogeographique",
+                facet_col_wrap=2,
+                title="phylogeographic analysis of {}".format(gene),
+                
                 #symbol = "Arbre phylogeographique",
                 )
+            graphs.append(dcc.Graph(figure=scatter_outpot))
 
-            return dcc.Graph(figure=scatter_outpot)
+        return graphs

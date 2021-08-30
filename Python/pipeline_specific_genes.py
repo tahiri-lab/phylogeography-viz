@@ -69,8 +69,8 @@ def displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold
         pattern = genes.get(gene)
         getGene(gene, pattern)
         createPhylogeneticTree(gene, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
-        #subprocess.call(["make", "clean"])
-        break
+    #subprocess.call(["make", "clean"])
+    
 
 def getGene(gene, pattern): 
     sequences_file = open("output/reference_gene.fasta", "r").read()
