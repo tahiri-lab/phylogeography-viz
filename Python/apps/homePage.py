@@ -59,7 +59,7 @@ card2 = dbc.Card(
     #style={"width": "45%"},
 ),
 
-
+#-----------------------------------------
 layout = html.Div([
     html.Div(html.H2("Title of project"), style={"text-align":"center"}),
     html.Hr(),

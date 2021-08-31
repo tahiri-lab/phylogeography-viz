@@ -164,7 +164,7 @@ layout = dbc.Container([
     # for output of pipeline
     dbc.Row([
             dbc.Col([
-                dcc.Interval(id='interval2', interval=1 * 1000, n_intervals=0),
+                dcc.Interval(id='interval2', interval=1 * 1000, n_intervals=0,max_intervals=25*60*1000),
                 html.Div(id='interval_container2'),
             ],xs=12, sm=12, md=12, lg=10, xl=10),
 
