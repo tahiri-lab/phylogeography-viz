@@ -1,3 +1,4 @@
+from typing import Container
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -14,11 +15,68 @@ import pathlib
 
 #dfg = pd.read_csv(DATA_PATH.joinpath("theData_IfWeHave.csv"))
 
+card1 = dbc.Card(
+    [
+        dbc.CardImg(src="/assets/UdeS1.jpg", top=True),
+        dbc.CardBody(
+            [
+                html.H4("Welcome to the Tahiri Lab", className="card-title"),
+                html.P(
+                    "We are a dynamic research group at the Sherbrooke University, Department of Computer Science. ",
+                    className="card-text",
+                ),
+                html.P(
+                    "Through engaged scholarship, our laboratory develops transdisciplinary research projects to analyze the" 
+                    "evolution of species and assess the impacts on health by combining, among other things, information"
+                     "from the genetics of species and climatic parameters.",
+                    className="card-text",
+                ),
+                dbc.CardLink("Tahiri Lab", href="https://tahirinadia.github.io/"),
+            ]
+        ),
+    ],
+    #style={"width": "45%"},
+),
+
+card2 = dbc.Card(
+    [
+        dbc.CardImg(src="/assets/pipeline.png", top=True),
+        dbc.CardBody(
+            [
+                html.H4("Phylotree", className="card-title"),
+                html.P(
+                    """This platform can be used to obtain trees from climatic data of the regions where the samples have been collected. 
+                    Those climatic trees are then used for topological comparison against phylogenetic trees 
+                    from multiple sequence alignments (MSAs) using the Robinson-Foulds (RF) metric. 
+                    MSAs that yield trees with a significant RF value are then saved in folders with their respective tree. 
+                    The output.csv file contains the informations of all the significant MSAs informations.""",
+                    className="card-text",
+                ),
+                dbc.CardLink("Github", href="https://github.com/tahiri-lab/phylogeography-viz/tree/main/Python"),
+            ]
+        ),
+    ],
+    #style={"width": "45%"},
+),
 
 
 layout = html.Div([
     html.Div(html.H2("Title of project"), style={"text-align":"center"}),
     html.Hr(),
+    #----------
+    dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                html.Div(card1),
+            ],xs=12, sm=12, md=12, lg=4, xl=4),
+            dbc.Col([
+                html.Div(card2),
+            ],xs=12, sm=12, md=12, lg=7, xl=7),
+
+         ],no_gutters=True, justify='around'),
+         
+         ],fluid=True),
+    
     #-------
     dbc.CardHeader(
             dbc.Button(

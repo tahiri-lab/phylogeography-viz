@@ -20,7 +20,6 @@ from dash.exceptions import PreventUpdate
 #DATA_PATH = PATH.joinpath("../").resolve()
 #dfg = pd.read_csv(DATA_PATH.joinpath("output.csv"))
 
-dfg = pd.read_csv("output.csv")
 
 layout = dbc.Container([
     html.H1('Output', style={"textAlign": "center"}),  #title
@@ -35,9 +34,9 @@ layout = dbc.Container([
                             id='datatable-interactivity1',
                             columns=[
                                 {"name": i, "id": i, "deletable": False, "selectable": True, "hideable": False}
-                                for i in dfg.columns
+                                for i in pd.read_csv("output.csv").columns
                             ],
-                            data=dfg.to_dict('records'),  # the contents of the table
+                            data=pd.read_csv("output.csv").to_dict('records'),  # the contents of the table
                             editable=False,              # allow editing of data inside all cells
                             filter_action="native",     # allow filtering of data by user ('native') or not ('none')
                             sort_action="native",       # enables data to be sorted per-column by user or not ('none')
