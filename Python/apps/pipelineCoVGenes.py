@@ -253,15 +253,25 @@ def update_output(n_clicks, bootstrap_threshold, rf_threshold, window_size, step
         reference_gene_file = 'output/reference_gene.fasta'
         pipeline_specific_genes.displayGenesOption(window_size, step_size, bootstrap_threshold, rf_threshold, data_names,genes_chosen)
 
-        output_container = html.Div([
-            dcc.Markdown('bootstrap_thrshold :  **{}**'.format(bootstrap_threshold)),
-            dcc.Markdown('rf_threshold :  **{}**'.format(rf_threshold)),
-            dcc.Markdown('window_size :  **{}**'.format(window_size)),
-            dcc.Markdown('step_size :  **{}**'.format(step_size)),
-            dcc.Markdown('data_names :  {}'.format(data_names)),
-            dcc.Markdown('genes_chosen :  **{}**'.format(genes_chosen)),
-            dcc.Markdown('Done. Please click on "Check Results" in the left side bar to view the results.'),
-    ])
+        output_container =  dbc.Card([
+            dbc.CardImg(src="/assets/trees-img.jpg", top=True),
+            dbc.CardBody([
+                html.H4("Done", className="card-title"),
+                dcc.Markdown('bootstrap_thrshold :  **{}**'.format(bootstrap_threshold),className="card-text"),
+                dcc.Markdown('rf_threshold :  **{}**'.format(rf_threshold),className="card-text"),
+                dcc.Markdown('window_size :  **{}**'.format(window_size),className="card-text"),
+                dcc.Markdown('step_size :  **{}**'.format(step_size),className="card-text"),
+                dcc.Markdown('data_names :  **{}**'.format(data_names),className="card-text"),
+                dcc.Markdown('genes_chosen :  **{}**'.format(genes_chosen),className="card-text"),
+                
+                dbc.CardLink("Check Results", href="checkResults"),
+                #dbc.Button("Go somewhere", color="primary"),
+            ]
+        ),
+    ],
+    style={"width": "60%"},       #50rem
+),
+
 
         return output_container
 
