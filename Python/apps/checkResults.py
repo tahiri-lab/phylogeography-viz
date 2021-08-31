@@ -6,6 +6,7 @@ from dash.dependencies import Input, Output,State
 import dash_bootstrap_components as dbc
 import dash_bio as dashbio
 from dash_html_components.Br import Br
+from dash_html_components.Div import Div
 from dash_html_components.Hr import Hr
 import plotly.express as px
 import pandas as pd
@@ -15,15 +16,20 @@ import dash_table
 from dash.exceptions import PreventUpdate
 
 # get relative data folder
-PATH = pathlib.Path(__file__).parent
-DATA_PATH = PATH.joinpath("../").resolve()
-dfg = pd.read_csv(DATA_PATH.joinpath("output.csv"))
+#PATH = pathlib.Path(__file__).parent
+#DATA_PATH = PATH.joinpath("../").resolve()
+#dfg = pd.read_csv(DATA_PATH.joinpath("output.csv"))
+
+dfg = pd.read_csv("output.csv")
 
 layout = dbc.Container([
     html.H1('Output', style={"textAlign": "center"}),  #title
 
     dbc.Row([
             dbc.Col([
+                #html.Button(id="view-button1", children="View results"),
+                #html.Br(),
+                #html.Br(),
                 html.Div([
                         dash_table.DataTable(
                             id='datatable-interactivity1',
@@ -59,6 +65,7 @@ layout = dbc.Container([
 
                         #html.Br(),
                     ]),
+                
 
             ],xs=12, sm=12, md=12, lg=10, xl=10),
 
@@ -100,7 +107,7 @@ layout = dbc.Container([
 # for download button
 @app.callback(
     Output("graph-container1", "children"),
-    Input("submit-button-filter1", "n_clicks"),
+    Input("submit-button-filter", "n_clicks"),
     State('datatable-interactivity1', "derived_virtual_data"),
     prevent_initial_call=True,
 )
@@ -135,3 +142,4 @@ def func(n_clicks,all_rows_data):
             graphs.append(dcc.Graph(figure=scatter_outpot))
 
         return graphs
+
