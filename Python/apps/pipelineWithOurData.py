@@ -14,7 +14,7 @@ import base64
 import datetime
 import io
 import pipeline
-from apps import checkResults
+
 
 # get relative data folder
 #PATH = pathlib.Path(__file__).parent

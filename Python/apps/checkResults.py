@@ -11,27 +11,27 @@ from dash_html_components.Hr import Hr
 import plotly.express as px
 import pandas as pd
 import pathlib
-from app import app
+from app import app, output_df
 import dash_table
 from dash.exceptions import PreventUpdate
 
 # get relative data folder
-
+'''
 def getOutputCSV(fileName = "output.csv"):
     PATH = pathlib.Path(__file__).parent
     DATA_PATH = PATH.joinpath("../").resolve()
     dfg = pd.read_csv(DATA_PATH.joinpath(fileName))
     return dfg
 
-output_data = getOutputCSV()
-
+output_df = getOutputCSV()
+'''
 table_interact = dash_table.DataTable(
                             id='datatable-interactivity1',
                             columns=[
                                 {"name": i, "id": i, "deletable": False, "selectable": True, "hideable": False}
-                                for i in output_data.columns
+                                for i in output_df.columns
                             ],
-                            data=output_data.to_dict('records'),  # the contents of the table
+                            data=output_df.to_dict('records'),  # the contents of the table
                             editable=False,              # allow editing of data inside all cells
                             filter_action="native",     # allow filtering of data by user ('native') or not ('none')
                             sort_action="native",       # enables data to be sorted per-column by user or not ('none')
@@ -63,10 +63,10 @@ layout = dbc.Container([
 
     dbc.Row([
             dbc.Col([
-                #html.Button(id="view-button1", children="View results"),
+                #html.Button(id="view-button1", children="Update results"),
                 #html.Br(),
                 #html.Br(),
-                html.Div(table_interact, id= "output-csv"),
+                html.Div(table_interact,id= "output-csv"),
                 
             ],xs=12, sm=12, md=12, lg=10, xl=10),
 
@@ -157,4 +157,14 @@ def func(n_clicks,all_rows_data):
         return graphs
 
 #------------------------------------------------
+'''
+@app.callback(
+    Output("output-csv","children"),
+    Input("view-button1", "n_clicks"))
 
+def update_data(n_clicks):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        return table_interact
+'''

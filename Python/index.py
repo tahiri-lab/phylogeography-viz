@@ -6,13 +6,15 @@ import dash_bootstrap_components as dbc
 import tree
 import pipeline
 import pipeline_specific_genes
-
+#import ttest
 # Connect to main app.py file
 from app import app
 from app import server
 
 # Connect to your app pages
 from apps import pipelineWithOurData, pipelineWithUploadedData, pipelineCoVGenes, uploadDataset, usingOurDataset, homePage, checkResults
+
+
 
 # styling the sidebar
 SIDEBAR_STYLE = {
