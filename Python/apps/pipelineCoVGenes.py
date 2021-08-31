@@ -31,7 +31,7 @@ genes_Cov = ['ORF1ab', 'S', 'ORF3a', 'ORF3b','E', 'M', 'ORF6', 'ORF7a','ORF7b','
 
 #reference gene max length, for the validation of 'sliding window size' and 'step size'
 ref_genes_len = {'ORF1ab': 21290, 'S':3825, 'ORF3a':828, 'ORF3b':456,'E':228, 'M':669, 'ORF6':9704, 
-                    'ORF7a':366,'ORF7b':132,'ORF8':366, 'N':366, 'ORF10':117}
+                    'ORF7a':366,'ORF7b':132,'ORF8':366, 'N':1260, 'ORF10':117}
 
 layout = dbc.Container([
     html.H1('Phylogenetic Tree', style={"textAlign": "center"}),  #title
