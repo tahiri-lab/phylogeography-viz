@@ -164,6 +164,14 @@ layout = dbc.Container([
     # for output of pipeline
     dbc.Row([
             dbc.Col([
+                dcc.Interval(id='interval2', interval=1 * 1000, n_intervals=0),
+                html.Div(id='interval_container2'),
+            ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+         ],no_gutters=True, justify='around'),
+
+    dbc.Row([
+            dbc.Col([
                 html.Div(id='output-container2'),
             ],xs=12, sm=12, md=12, lg=10, xl=10),
 
@@ -255,4 +263,24 @@ def update_output(n_clicks, bootstrap_threshold, rf_threshold, window_size, step
             dcc.Markdown('Done. Please click on "Check Results" in the left side bar to view the results.'),
     ])
 
-    return output_container
+        return output_container
+
+# add a timer
+@app.callback(
+    Output('interval_container2', 'children'),
+    Input("submit-button2", "n_clicks"),
+    Input('interval2', 'n_intervals'),
+    State('output-container2', 'children')
+    )
+def update_interval(n_clicks, n_intervals,output):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        if output == None:
+            interval_container = html.Div([
+                dcc.Markdown('Program is running **{}** s'.format(n_intervals))
+            ])
+
+            return interval_container
+        else:
+            return dash.no_update
