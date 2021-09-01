@@ -45,8 +45,8 @@ card2 = dbc.Card(
             [
                 html.H4("Phylotree", className="card-title"),
                 html.P(
-                    """This platform can be used to obtain trees from climatic data of the regions where the samples have been collected. 
-                    Those climatic trees are then used for topological comparison against phylogenetic trees 
+                    """This platform can be used to obtain trees from environment data (reference data) of the regions where the samples have been collected. 
+                    Those reference trees are then used for topological comparison against phylogenetic trees 
                     from multiple sequence alignments (MSAs) using the Robinson-Foulds (RF) metric. 
                     MSAs that yield trees with a significant RF value are then saved in folders with their respective tree. 
                     The output.csv file contains the informations of all the significant MSAs informations.""",
