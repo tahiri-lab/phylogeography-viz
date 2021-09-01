@@ -25,6 +25,11 @@ def prepareDirectory():
         if item.endswith("_newick"):
             os.remove(item)
 
+    delete_path1 = os.listdir('assets')
+    for item in delete_path1:
+        if item.startswith("phylo_tree"):
+            os.remove(item)
+
 #-----------------------------------------
 
 def getDissimilaritiesMatrix(nom_fichier_csv, column_with_specimen_name, column_to_search, outfile_name):

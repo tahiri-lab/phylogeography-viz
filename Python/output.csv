@@ -1,20 +1,6 @@
-Gene,Arbre phylogeographique,Position ASM,Bootstrap moyen,RF normalise
-M,Pression_en_surface_kPa_newick,300_600,6.666666666666667,50.0
-M,Pression_en_surface_kPa_newick,200_500,6.666666666666667,56.666666666666664
-M,Pression_en_surface_kPa_newick,0_300,6.666666666666667,53.333333333333336
-M,Pression_en_surface_kPa_newick,100_400,8.0,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,9000_9300,7.333333333333333,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,300_600,5.333333333333333,50.0
-ORF6,Pression_en_surface_kPa_newick,8900_9200,11.333333333333334,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,5600_5900,9.333333333333334,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,900_1200,13.333333333333334,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,7200_7500,10.0,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,1100_1400,8.0,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,8400_8700,3.3333333333333335,50.0
-ORF6,Pression_en_surface_kPa_newick,0_300,5.333333333333333,50.0
-ORF6,Pression_en_surface_kPa_newick,9300_9600,7.333333333333333,50.0
-ORF6,Pression_en_surface_kPa_newick,7900_8200,6.666666666666667,50.0
-ORF6,Pression_en_surface_kPa_newick,6600_6900,8.666666666666666,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,7400_7700,3.3333333333333335,50.0
-ORF6,Pression_en_surface_kPa_newick,7000_7300,11.333333333333334,53.333333333333336
-ORF6,Pression_en_surface_kPa_newick,8800_9100,6.666666666666667,53.333333333333336
+,Gene,Arbre phylogeographique,Position ASM,Bootstrap moyen,RF normalise
+0,output/reference_gene.fasta,Pression_en_surface_kPa_newick,4800_9800,16.0,56.66666666666666
+1,output/reference_gene.fasta,Pression_en_surface_kPa_newick,15600_20600,27.2,60.0
+2,output/reference_gene.fasta,Pression_en_surface_kPa_newick,10200_15200,22.666666666666668,60.0
+3,output/reference_gene.fasta,Pression_en_surface_kPa_newick,24000_29000,51.0,70.0
+4,output/reference_gene.fasta,Pression_en_surface_kPa_newick,13800_18800,32.666666666666664,63.33333333333333

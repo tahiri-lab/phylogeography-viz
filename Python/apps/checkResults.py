@@ -21,7 +21,7 @@ import numpy as np
 from app import app
 
 # get relative data folder
-
+'''
 def getOutputCSV(fileName = "output.csv"):
     PATH = pathlib.Path(__file__).parent
     DATA_PATH = PATH.joinpath("../").resolve()
@@ -30,6 +30,10 @@ def getOutputCSV(fileName = "output.csv"):
     return dfg
 
 output_df = getOutputCSV()
+'''
+
+
+output_df = pd.read_csv("output.csv")
 
 table_interact = dash_table.DataTable(
                             id='datatable-interactivity1',
@@ -127,9 +131,26 @@ layout = dbc.Container([
 
          ],no_gutters=True, justify='around'),
 
+    # For alignment chart
+    dbc.Row([
+             dbc.Col([
+                html.Hr(),
+                html.Br(),
+                html.Div(id='alignment-select1'),
+             ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+         ],no_gutters=True, justify='around'),
+
+    dbc.Row([
+             dbc.Col([
+                html.Br(),
+                html.Div(id='alignment-container1'),
+
+             ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+         ],no_gutters=True, justify='around'),
 
 
-    
 
     ], fluid=True)
 
@@ -203,6 +224,8 @@ def func(n_clicks,all_rows_data,select_rows):
         #print(df_select)
         trees_display = []
         for index, row in df_select.iterrows():
+            #if row['Gene'] == 'output/reference_gene.fasta':
+
             gene = row['Gene']
             position_ASM = row['Position ASM']
             tree_phylogeo = row['Arbre phylogeographique']
@@ -233,7 +256,62 @@ def func(n_clicks,all_rows_data,select_rows):
     return trees_display
 
 #-----------------------------------
+# select gene
+@app.callback(
+    Output("alignment-select1", "children"),
+    Input("alignChart-button1", "n_clicks"),
+    State('datatable-interactivity1', "derived_virtual_data"),
+    State('datatable-interactivity1', 'derived_virtual_selected_rows'),
+    prevent_initial_call=True,
+)
+def func(n_clicks,all_rows_data,select_rows):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        dff = pd.DataFrame(all_rows_data)
+        df_select = dff[dff.index.isin(select_rows)]
 
+        genes_selected = df_select['Gene'].unique()
+
+        return html.Div([
+            html.H4("Select gene for alignment visualisation"),
+            dcc.RadioItems(id='choose-align-gene',
+                        options=[{'label':x, 'value':x} for x in genes_selected],),  
+                        ])
+#prepare dataset
+@app.callback(
+    Output("alignment-container1", "children"),
+    Input('choose-align-gene','value'),)
+
+def func(gene):
+    directory_name = gene + '_gene'
+    theGene_fileFasta = directory_name + '.fasta'
+    align_chart_path = os.path.join('./output',directory_name,theGene_fileFasta)
+
+    with open(align_chart_path, encoding='utf-8') as data_file:
+        data = data_file.read()
+
+    return html.Div([
+                dashbio.AlignmentChart(
+                    id='my-alignment-viewer',
+                    data=data
+                ),
+                html.Div(id='alignment-viewer-output')
+            ])
+#create alignment chart
+@app.callback(
+    Output('alignment-viewer-output', 'children'),
+    Input('my-alignment-viewer', 'eventDatum')
+)
+def update_output(value):
+    if value is None:
+        return 'No data.'
+    return str(value)
+
+            
+
+            
+        
 
 
 
@@ -256,4 +334,8 @@ def update_data(n_clicks):
         return dash.no_update
     else:
         return table_interact
+
+
+
+        
 '''
