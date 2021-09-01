@@ -15,7 +15,7 @@ import dash_table
 from dash.exceptions import PreventUpdate
 import os
 from Bio import AlignIO, SeqIO, Phylo
-from ete3 import Tree
+import re
 import numpy as np
 
 from app import app
@@ -224,7 +224,7 @@ def func(n_clicks,all_rows_data,select_rows):
         #print(df_select)
         trees_display = []
         for index, row in df_select.iterrows():
-            #if row['Gene'] == 'output/reference_gene.fasta':
+            #if row['Gene'] != 'output/reference_gene.fasta':
 
             gene = row['Gene']
             position_ASM = row['Position ASM']
@@ -268,36 +268,58 @@ def func(n_clicks,all_rows_data,select_rows):
     if n_clicks is None:
         return dash.no_update
     else:
+        #if row['Gene'] != 'output/reference_gene.fasta':
         dff = pd.DataFrame(all_rows_data)
         df_select = dff[dff.index.isin(select_rows)]
 
         genes_selected = df_select['Gene'].unique()
+        #print(genes_selected)
+        if genes_selected[0] != 'output/reference_gene.fasta':
+            
+            return html.Div([
+                html.H4("Select gene for alignment visualisation"),
+                dcc.RadioItems(id='choose-align-gene',
+                            options=[{'label':x, 'value':x} for x in genes_selected],),  
+                            ])
+        else:
+            positions_selected = df_select['Position ASM'].unique()
+            return html.Div([
+                html.H4("Select position ASM for alignment visualisation"),
+                dcc.RadioItems(id='choose-align-gene',
+                            options=[{'label':x, 'value':x} for x in positions_selected],),  
+                            ])
 
-        return html.Div([
-            html.H4("Select gene for alignment visualisation"),
-            dcc.RadioItems(id='choose-align-gene',
-                        options=[{'label':x, 'value':x} for x in genes_selected],),  
-                        ])
+
 #prepare dataset
 @app.callback(
     Output("alignment-container1", "children"),
     Input('choose-align-gene','value'),)
 
-def func(gene):
-    directory_name = gene + '_gene'
-    theGene_fileFasta = directory_name + '.fasta'
-    align_chart_path = os.path.join('./output',directory_name,theGene_fileFasta)
+def func(val):
+    if val != None:
+        
+        if not bool(re.search(r'\d', val[0])):
+            directory_name = val + '_gene'
+            theGene_fileFasta = directory_name + '.fasta'
+            align_chart_path = os.path.join('./output',directory_name,theGene_fileFasta)
+        else:
+            phylip_path = os.path.join('./output/windows',val)
+            records = SeqIO.parse(phylip_path, "phylip")
+            #align_chart_path = phylip_path +'.clustal'
+            align_chart_path = phylip_path +'.fasta'
+            SeqIO.write(records, align_chart_path, "fasta")
 
-    with open(align_chart_path, encoding='utf-8') as data_file:
-        data = data_file.read()
 
-    return html.Div([
-                dashbio.AlignmentChart(
-                    id='my-alignment-viewer',
-                    data=data
-                ),
-                html.Div(id='alignment-viewer-output')
-            ])
+        with open(align_chart_path, encoding='utf-8') as data_file:
+            data = data_file.read()
+
+        return html.Div([
+                    dashbio.AlignmentChart(
+                        id='my-alignment-viewer',
+                        data=data
+                    ),
+                    html.Div(id='alignment-viewer-output')
+                ])
 #create alignment chart
 @app.callback(
     Output('alignment-viewer-output', 'children'),
