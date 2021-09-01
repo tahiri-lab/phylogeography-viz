@@ -1,7 +1,7 @@
 import os
 from Bio import AlignIO, SeqIO, Phylo
 from ete3 import Tree
-import re
+
 
 
 import dash
@@ -12,7 +12,7 @@ import dash_html_components as html
 
 
 #--------------
-app = dash.Dash(__name__)
+#app = dash.Dash(__name__)
 
 #-----------------
 
@@ -108,6 +108,7 @@ if __name__ == '__main__':
 '''
 
 #---------------------------------
+'''
 with open ("../assets/phylo_tree.txt", "r") as f:
     tree_txt = f.read()
 
@@ -116,9 +117,6 @@ app.layout = html.Div([
     html.Div(tree_txt, style={'whiteSpace': 'pre-line'}),
     
 ])
-
+'''
 #----------------------------------------
 
-
-if __name__ == '__main__':
-    app.run_server(debug=True)

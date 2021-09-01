@@ -4,27 +4,33 @@ from dash_core_components.Graph import Graph
 import dash_html_components as html
 from dash.dependencies import Input, Output,State
 import dash_bootstrap_components as dbc
-#import dash_bio as dashbio
+import dash_bio as dashbio
 from dash_html_components.Br import Br
 from dash_html_components.Div import Div
 from dash_html_components.Hr import Hr
 import plotly.express as px
 import pandas as pd
 import pathlib
-from app import app, output_df
 import dash_table
 from dash.exceptions import PreventUpdate
+import os
+from Bio import AlignIO, SeqIO, Phylo
+from ete3 import Tree
+import numpy as np
+
+from app import app
 
 # get relative data folder
-'''
+
 def getOutputCSV(fileName = "output.csv"):
     PATH = pathlib.Path(__file__).parent
     DATA_PATH = PATH.joinpath("../").resolve()
-    dfg = pd.read_csv(DATA_PATH.joinpath(fileName))
+    if os.path.exists(DATA_PATH.joinpath(fileName)):
+        dfg = pd.read_csv(DATA_PATH.joinpath(fileName))
     return dfg
 
 output_df = getOutputCSV()
-'''
+
 table_interact = dash_table.DataTable(
                             id='datatable-interactivity1',
                             columns=[
@@ -75,17 +81,30 @@ layout = dbc.Container([
     dbc.Row([
              dbc.Col([
                 html.Br(),
+                html.Button(id="submit-button-filter1", children="Create Graph"),
+             ],xs=3, sm=3, md=3, lg=3, xl=3),
+
+             dbc.Col([
+                html.Br(),
+                dbc.Button(id="trees-button1", children="Create tree"),
+             ],xs=3, sm=3, md=3, lg=3, xl=3),
+
+             dbc.Col([
+                html.Br(),
+                dbc.Button(id="alignChart-button1", children="Create AlignmentChart"),
+             ],xs=3, sm=3, md=3, lg=3, xl=3),
+
+             dbc.Col([
+                html.Br(),
                 dbc.Button(id='btn-csv1',
                             children=[html.I(className="fa fa-download mr-1"), "Download to CSV"],
                             color="info",
                             className="mt-1"
                                     ),
-                html.Br(),
-                html.Br(),
-                html.Button(id="submit-button-filter1", children="Create Graph"),
                 dcc.Download(id="download-component-csv1"),
 
-             ],xs=12, sm=12, md=12, lg=10, xl=10),
+             ],xs=3, sm=3, md=3, lg=3, xl=3),
+
 
          ],no_gutters=True, justify='around'),
 
@@ -97,6 +116,17 @@ layout = dbc.Container([
              ],xs=12, sm=12, md=12, lg=10, xl=10),
 
          ],no_gutters=True, justify='around'),
+
+    # For tree
+    dbc.Row([
+             dbc.Col([
+                html.Hr(),
+                html.Br(),
+                html.Div(id='trees-container1'),
+             ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+         ],no_gutters=True, justify='around'),
+
 
 
     
@@ -137,7 +167,7 @@ def func(n_clicks,all_rows_data):
         for gene in dff['Gene'].unique():
             dfg = dff[dff['Gene'] == gene]
 
-            scatter_outpot = px.scatter(
+            scatter_output = px.scatter(
                 data_frame=dfg,
                 x="Position ASM",
                 y="Bootstrap moyen",
@@ -152,9 +182,68 @@ def func(n_clicks,all_rows_data):
                 
                 #symbol = "Arbre phylogeographique",
                 )
-            graphs.append(dcc.Graph(figure=scatter_outpot))
+            graphs.append(dcc.Graph(figure=scatter_output))
 
         return graphs
+#------------------------------------
+# For trees
+@app.callback(
+    Output("trees-container1", "children"),
+    Input("trees-button1", "n_clicks"),
+    State('datatable-interactivity1', "derived_virtual_data"),
+    State('datatable-interactivity1', 'derived_virtual_selected_rows'),
+    prevent_initial_call=True,
+)
+def func(n_clicks,all_rows_data,select_rows):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        dff = pd.DataFrame(all_rows_data)
+        df_select = dff[dff.index.isin(select_rows)]
+        #print(df_select)
+        trees_display = []
+        for index, row in df_select.iterrows():
+            gene = row['Gene']
+            position_ASM = row['Position ASM']
+            tree_phylogeo = row['Arbre phylogeographique']
+
+            directory_name = gene + '_gene'
+            #align_file_name = position_ASM
+            theGene_fileFasta = directory_name + '.fasta'
+            tree_output_file = position_ASM + '_' + tree_phylogeo + '_tree'
+
+            tree_path = os.path.join('./output',directory_name,tree_output_file)
+            tree = Phylo.read(tree_path, "newick")
+            tree_txt_path = './assets/phylo_tree.txt' + str(index)
+            with open(tree_txt_path, 'w') as fh:
+                Phylo.draw_ascii(tree, file = fh)
+            with open (tree_txt_path, "r") as f:
+                tree_txt = f.read()
+
+            tree_card = dbc.Card([
+            dbc.CardBody([
+                    html.H4("Row index :" + str(index), className="card-title"),
+                    html.Div(tree_txt, style={'whiteSpace': 'pre-line'}),
+                ]),
+                    ],style={"width": "95%"},)
+            
+            trees_display.append(tree_card)
+ 
+        
+    return trees_display
+
+#-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
 
 #------------------------------------------------
 '''

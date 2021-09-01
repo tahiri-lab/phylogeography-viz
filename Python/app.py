@@ -15,4 +15,4 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SPACELAB, FONT_AWESOM
 server = app.server
 
 
-output_df = pd.read_csv("output.csv")
+#output_df = pd.read_csv("output.csv")
