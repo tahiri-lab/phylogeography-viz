@@ -13,6 +13,7 @@ import base64
 import datetime
 import io
 import pipeline
+from Bio import SeqIO
 
 # get relative data folder
 PATH = pathlib.Path(__file__).parent
@@ -106,7 +107,7 @@ layout = dbc.Container([
         dbc.Col([
             html.Div([
                 html.H3("Sliding Window Size"),
-                dcc.Input(id = "input_windowSize1", type = "number", min = 0, max = 5000,
+                dcc.Input(id = "input_windowSize1", type = "number", min = 0, max = 50000,
                     placeholder = "Enter Sliding Window Size", 
                     style= {'width': '65%','marginRight':'20px'}), 
                 html.Div(id='WindowSize-output-container1')        
@@ -119,7 +120,7 @@ layout = dbc.Container([
         dbc.Col([
             html.Div([
                 html.H3("Step Size"),
-                dcc.Input(id = "input_stepSize1", type = "number", min = 0, max = 5000, 
+                dcc.Input(id = "input_stepSize1", type = "number", min = 0, max = 50000, 
                     placeholder = "Enter Step Size", 
                     style= {'width': '65%','marginRight':'20px'}),
                 html.Div(id='StepSize-output-container1')        
@@ -169,6 +170,14 @@ layout = dbc.Container([
     # for output of pipeline
     dbc.Row([
             dbc.Col([
+                dcc.Interval(id='interval', interval=1 * 1000, n_intervals=0,max_intervals=30*60*1000),
+                html.Div(id='interval_container'),
+            ],xs=12, sm=12, md=12, lg=10, xl=10),
+
+         ],no_gutters=True, justify='around'),
+  
+    dbc.Row([
+            dbc.Col([
                 html.Div(id='output-container'),
             ],xs=12, sm=12, md=12, lg=10, xl=10),
 
@@ -194,18 +203,39 @@ def update_output(value):
     return 'You have selected {:0.1f}%'.format(value)
 
 # callback for sliding window siza & step size; view the value chosen
+def getSeqLengthMax(fileName = "output/upload_gene.fasta"):
+    len_seq_max = 0
+    for seq_record in SeqIO.parse(fileName, "fasta"):
+        if len(seq_record) > len_seq_max:
+            len_seq_max = len(seq_record)
+    return len_seq_max
+
 @app.callback(
     dash.dependencies.Output('WindowSize-output-container1', 'children'),
-    [dash.dependencies.Input('input_windowSize1', 'value')])
+    [dash.dependencies.Input('input_stepSize1', 'value')])
 def update_output(value):
-    return 'You have selected {}'.format(value)
+    if os.path.exists("output/upload_gene.fasta"):
+        ref_genes_len = getSeqLengthMax("output/upload_gene.fasta")
+        if value == None:
+            value_max = ref_genes_len - 1
+        else:
+            value_max = ref_genes_len - 1 - value
+        return 'The input value must an integer from 0 to {}'.format(value_max)
 
 @app.callback(
     dash.dependencies.Output('StepSize-output-container1', 'children'),
-    [dash.dependencies.Input('input_stepSize1', 'value')])
+    [dash.dependencies.Input('input_windowSize1', 'value')])
 def update_output(value):
-    return 'You have selected {}'.format(value)
+    if os.path.exists("output/upload_gene.fasta"):
+        ref_genes_len = getSeqLengthMax("output/upload_gene.fasta")
+        if value == None:
+            value_max = ref_genes_len - 1
+        else:
+            value_max = ref_genes_len - 1 - value
+        return 'The input value must be an integer from 0 to {}'.format(value_max)
+    
 
+#------------------------------------
 # get the contens of uploaded files    
 
 def parse_fasta_contents(contents, filename, date):
@@ -216,10 +246,14 @@ def parse_fasta_contents(contents, filename, date):
         if 'fasta' in filename:
             # Assume that the user uploaded a fasta file
             seq_upload = decoded.decode('utf-8')
+            with open("output/upload_gene.fasta", "w") as f:
+                f.write(seq_upload)
+
             return html.Div([
                         dcc.Markdown('You have uploades file(s):  **{}**'.format(filename)),
                         #html.H6(datetime.datetime.fromtimestamp(date)),
                         #html.Small(seq_upload),
+
                         # For debugging, display the raw contents provided by the web browser
                         #html.Div('Raw Content'),
                         #html.Pre(contents[0:200] + '...', style={
@@ -230,13 +264,14 @@ def parse_fasta_contents(contents, filename, date):
         else:
             # Assume that the user uploaded other files
             return html.Div([
-                'Please upload a fasta file.'
+                dcc.Markdown('Please upload a **fasta file**.'),   
         ])
     except Exception as e:
         print(e)
         return html.Div([
             'There was an error processing this file.' 
         ])
+
 
     
 #callback for uploaded data
@@ -253,3 +288,60 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         return children
 
 
+#---------------------------------------
+# run pipeline
+
+@app.callback(
+    Output('output-container', 'children'),
+    Input("submit-button", "n_clicks"),
+    State('BootstrapThreshold-slider','value'),
+    State('RF-distanceThreshold-slider','value'),
+    State('input_windowSize1','value'),
+    State('input_stepSize1','value'),
+    State('reference_trees1','value'),
+    )
+
+def update_output(n_clicks, bootstrap_threshold, rf_threshold, window_size, step_size, data_names):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        reference_gene_file = 'output/reference_gene.fasta'
+        pipeline.createPhylogeneticTree(reference_gene_file, window_size, step_size, bootstrap_threshold, rf_threshold, data_names)
+        output_container = dbc.Card([
+            dbc.CardImg(src="/assets/trees-img.jpg", top=True),
+            dbc.CardBody([
+                html.H4("Done", className="card-title"),
+                dcc.Markdown('bootstrap_thrshold :  **{}**'.format(bootstrap_threshold),className="card-text"),
+                dcc.Markdown('rf_threshold :  **{}**'.format(rf_threshold),className="card-text"),
+                dcc.Markdown('window_size :  **{}**'.format(window_size),className="card-text"),
+                dcc.Markdown('step_size :  **{}**'.format(step_size),className="card-text"),
+                dcc.Markdown('data_names :  **{}**'.format(data_names),className="card-text"),
+                
+                dbc.CardLink("Check Results", href="checkResults"),
+                #dbc.Button("Go somewhere", color="primary"),
+            ]
+        ),
+    ],
+    style={"width": "60%"},       #50rem
+),
+
+        return output_container
+# add a timer
+@app.callback(
+    Output('interval_container', 'children'),
+    Input("submit-button", "n_clicks"),
+    Input('interval', 'n_intervals'),
+    State('output-container', 'children')
+    )
+def update_interval(n_clicks, n_intervals,output):
+    if n_clicks is None:
+        return dash.no_update
+    else:
+        if output == None:
+            interval_container = html.Div([
+                dcc.Markdown('Program is running **{}** s'.format(n_intervals))
+            ])
+
+            return interval_container
+        else:
+            return dash.no_update

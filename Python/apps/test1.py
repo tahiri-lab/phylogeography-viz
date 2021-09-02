@@ -9,6 +9,18 @@ from dash.dependencies import Input, Output
 import dash_bio as dashbio
 import dash_html_components as html
 
+def getSeqLengthMax(fileName = "output/upload_gene.fasta"):
+    len_seq_max = 0
+    for seq_record in SeqIO.parse(fileName, "fasta"):
+        if len(seq_record) > len_seq_max:
+            len_seq_max = len(seq_record)
+    return len_seq_max
+
+ll = getSeqLengthMax()
+
+print(ll)
+
+
 
 
 #--------------
