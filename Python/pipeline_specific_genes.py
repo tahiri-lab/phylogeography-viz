@@ -33,8 +33,7 @@ def prepareDirectory():
     for item in delete_path:
         if item.endswith("_gene"):
             shutil.rmtree('output'+'/'+item)
-        if item.startswith("phylo_tree.txt"):
-            os.remove(item)
+        
 
     delete_path2 = os.listdir()
 
