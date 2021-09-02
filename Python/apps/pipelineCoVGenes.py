@@ -261,8 +261,8 @@ def update_output(n_clicks, bootstrap_threshold, rf_threshold, window_size, step
                 dcc.Markdown('rf_threshold :  **{}**'.format(rf_threshold),className="card-text"),
                 dcc.Markdown('window_size :  **{}**'.format(window_size),className="card-text"),
                 dcc.Markdown('step_size :  **{}**'.format(step_size),className="card-text"),
-                dcc.Markdown('data_names :  **{}**'.format(data_names),className="card-text"),
-                dcc.Markdown('genes_chosen :  **{}**'.format(genes_chosen),className="card-text"),
+                dcc.Markdown('data_names :  {}'.format(data_names),className="card-text"),
+                dcc.Markdown('genes_chosen :  {}'.format(genes_chosen),className="card-text"),
                 
                 dbc.CardLink("Check Results", href="checkResults"),
                 #dbc.Button("Go somewhere", color="primary"),

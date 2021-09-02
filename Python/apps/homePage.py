@@ -61,7 +61,7 @@ card2 = dbc.Card(
 
 #-----------------------------------------
 layout = html.Div([
-    html.Div(html.H2("Title of project"), style={"text-align":"center"}),
+    html.Div(html.H2("Phylogeography"), style={"text-align":"center"}),
     html.Hr(),
     #----------
     dbc.Container([

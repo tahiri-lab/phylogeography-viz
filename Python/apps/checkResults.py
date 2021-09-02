@@ -198,7 +198,7 @@ def func(n_clicks,all_rows_data):
                 opacity = 0.5,
                 hover_data=['Gene'],
                 facet_col="Arbre phylogeographique",
-                facet_col_wrap=2,
+                facet_col_wrap=1,
                 title="phylogeographic analysis of {}".format(gene),
                 
                 #symbol = "Arbre phylogeographique",
@@ -237,7 +237,7 @@ def func(n_clicks,all_rows_data,select_rows):
 
             tree_path = os.path.join('./output',directory_name,tree_output_file)
             tree = Phylo.read(tree_path, "newick")
-            tree_txt_path = './assets/phylo_tree.txt' + str(index)
+            tree_txt_path = './output/phylo_tree.txt' + str(index)
             with open(tree_txt_path, 'w') as fh:
                 Phylo.draw_ascii(tree, file = fh)
             with open (tree_txt_path, "r") as f:
