@@ -24,11 +24,8 @@ def prepareDirectory():
     for item in delete_path:
         if item.endswith("_newick"):
             os.remove(item)
-
-    delete_path1 = os.listdir('assets')
-    for item in delete_path1:
-        if item.startswith("phylo_tree"):
-            os.remove(item)
+    
+    os.remove("output/upload_gene.fasta")
 
 #-----------------------------------------
 
