@@ -24,8 +24,9 @@ def prepareDirectory():
     for item in delete_path:
         if item.endswith("_newick"):
             os.remove(item)
-    
-    os.remove("output/upload_gene.fasta")
+
+    if os.path.exists("output/upload_gene.fasta") :
+        os.remove("output/upload_gene.fasta")
 
 #-----------------------------------------
 
