@@ -4,8 +4,8 @@ import smtplib
 
 
 def send_email(subject,msg,reciever):
-    EMAIL_ADDRESS = 'testpythonsend08@gmail.com'
-    PASSWORD = 'woshixiangzai888'
+    EMAIL_ADDRESS = '******@gmail.com'
+    PASSWORD = '******'
 
     try:
         with smtplib.SMTP('smtp.gmail.com',587) as smtp:
