@@ -1,4 +1,4 @@
-EMAIL_ADDRESS = 'testpythonsend08@gmail.com'
-PASSWORD = 'woshixiangzai888'
+EMAIL_ADDRESS = '***@gmail.com'
+PASSWORD = '*****'
 
 
