@@ -5,7 +5,7 @@ The purpose of this application is to visualize the pipeline of Phylotree and to
 https://github.com/tahiri-lab/phylogeography-algo
 
 - Using config.py to star the program
-- pipeline.py and pipeline_specific_genes.py are the algorithme 
+- try.py pipeline.py and pipeline_specific_genes.py are the algorithme 
 - Folder apps: template for each web page
 - Folder assets: images utilised in template and css file
 - Folder datasets: Meteorological data used in the analysis
